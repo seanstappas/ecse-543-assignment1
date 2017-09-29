@@ -31,4 +31,26 @@ def empty_matrix(rows, cols):
     :param cols: number of columns
     :return: the empty matrix
     """
-    return [[0 for row in range(cols)] for col in range(rows)]
+    return [[0 for col in range(cols)] for row in range(rows)]
+
+
+def transpose(matrix):
+    """
+    Returns the transpose of the given matrix.
+
+    :param matrix: the matrix to take the transpose of
+    :return: the transpose of the matrix
+    """
+    rows = len(matrix)
+    cols = len(matrix[0])
+    return [[matrix[row][col] for row in range(rows)] for col in range(cols)]
+
+
+def column_vector(*values):
+    """
+    Returns a column vector (matrix) with the specified values.
+
+    :param values: the values, one for each row of the column vector
+    :return: the column vector
+    """
+    return [[value] for value in values]

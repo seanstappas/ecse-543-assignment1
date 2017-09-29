@@ -1,4 +1,4 @@
-from matrix_utilities import matrix_multiply, empty_matrix
+from matrix_utilities import matrix_multiply, empty_matrix, transpose, column_vector
 from choleski import is_positive_definite, choleski
 
 matrix_2 = [
@@ -20,23 +20,11 @@ matrix_4 = [
 ]
 matrices = [matrix_2, matrix_3, matrix_4]
 
-x_2 = [
-    [8],
-    [3]
-]
+x_2 = column_vector(8, 3)
 
-x_3 = [
-    [9],
-    [4],
-    [3]
-]
+x_3 = column_vector(9, 4, 3)
 
-x_4 = [
-    [5],
-    [4],
-    [1],
-    [9]
-]
+x_4 = column_vector(5, 4, 1, 9)
 
 
 def q1b():

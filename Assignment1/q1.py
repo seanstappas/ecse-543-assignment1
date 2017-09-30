@@ -1,4 +1,6 @@
-from matrix_utilities import matrix_multiply, empty_matrix, transpose, column_vector
+import csv
+
+from matrix_utilities import matrix_multiply, empty_matrix, transpose, column_vector, csv_to_matrix
 from choleski import is_positive_definite, choleski
 
 matrix_2 = [
@@ -47,6 +49,12 @@ def q1c():
         print('x_result: {}'.format(x_result))  # TODO: Assert equal here (to number of sig figs)
 
 
+def q1d():
+    matrix = csv_to_matrix('network_branches.csv')
+    print(matrix)
+
+
 if __name__ == '__main__':
     # q1b()
-    q1c()
+    # q1c()
+    q1d()

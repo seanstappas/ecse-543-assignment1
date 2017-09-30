@@ -1,3 +1,7 @@
+import csv
+from ast import literal_eval
+
+
 def matrix_multiply(A, B):
     """
     Multiplies the given matrices.
@@ -54,3 +58,12 @@ def column_vector(*values):
     :return: the column vector
     """
     return [[value] for value in values]
+
+
+def csv_to_matrix(filename):
+    with open('network_branches.csv', 'r') as csv_file:
+        reader = csv.reader(csv_file)
+        matrix = []
+        for row_number, row in enumerate(reader):
+            matrix.append([literal_eval(val) for val in row])
+        return matrix

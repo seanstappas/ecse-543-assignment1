@@ -1,60 +1,65 @@
-import csv
+from __future__ import division
 
-from matrix_utilities import matrix_multiply, empty_matrix, transpose, column_vector, csv_to_matrix
-from choleski import is_positive_definite, choleski
+from linear_networks import solve_linear_network
+from choleski import choleski_solve
+from matrix_utilities import Matrix
 
-matrix_2 = [
-    [1, 0],
-    [0, 2]
-]
-
-matrix_3 = [
+L_2 = Matrix([
+    [5, 0],
+    [1, 3]
+])
+L_3 = Matrix([
     [3, 0, 0],
-    [0, 2, 0],
-    [0, 0, 1]
-]
+    [1, 2, 0],
+    [8, 5, 1]
+])
+L_4 = Matrix([
+    [1, 0, 0, 0],
+    [2, 8, 0, 0],
+    [5, 5, 4, 0],
+    [7, 2, 8, 7]
+])
 
-matrix_4 = [
-    [5, 0, 0, 0],
-    [0, 1, 0, 0],
-    [0, 0, 2, 0],
-    [0, 0, 0, 7]
-]
+matrix_2 = L_2 * L_2.transpose()
+matrix_3 = L_3 * L_3.transpose()
+matrix_4 = L_4 * L_4.transpose()
 matrices = [matrix_2, matrix_3, matrix_4]
 
-x_2 = column_vector(8, 3)
-
-x_3 = column_vector(9, 4, 3)
-
-x_4 = column_vector(5, 4, 1, 9)
+x_2 = Matrix.column_vector([8, 3])
+x_3 = Matrix.column_vector([9, 4, 3])
+x_4 = Matrix.column_vector([5, 4, 1, 9])
+xs = [x_2, x_3, x_4]
 
 
 def q1b():
     for count, A in enumerate(matrices):
         n = count + 2
-        print('n={} matrix is positive-definite: {}'.format(n, is_positive_definite(A)))
+        print('n={} matrix is positive-definite: {}'.format(n, A.is_positive_definite()))
 
 
 def q1c():
-    xs = [x_2, x_3, x_4]
-    for count, (x, A) in enumerate(zip(xs, matrices)):
-        n = count + 2
-        b = matrix_multiply(A, x)
+    for x, A in zip(xs, matrices):
+        b = A * x
         print('A: {}'.format(A))
-        print('x: {}'.format(x))
         print('b: {}'.format(b))
 
-        x_result = empty_matrix(n, 1)
-        choleski(A, x_result, b)
+        x_result = choleski_solve(A, b)
+        print('x: {}'.format(x))
         print('x_result: {}'.format(x_result))  # TODO: Assert equal here (to number of sig figs)
 
 
 def q1d():
-    matrix = csv_to_matrix('network_branches.csv')
-    print(matrix)
+    for i in range(1, 6):
+        A = Matrix.csv_to_matrix('incidence_matrix_{}.csv'.format(i))
+        Y, J, E = Matrix.csv_to_network_branch_matrices('network_branches_{}.csv'.format(i))
+        print('Y: {}'.format(Y))
+        print('J: {}'.format(J))
+        print('E: {}'.format(E))
+        x = solve_linear_network(A, Y, J, E)
+        print('Solved x in network {}: {}'.format(i, x))  # TODO: Create my own test circuits here
 
 
 if __name__ == '__main__':
-    # q1b()
-    # q1c()
+    q1b()
+    q1c()
     q1d()

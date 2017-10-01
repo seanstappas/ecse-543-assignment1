@@ -1,5 +1,4 @@
 from __future__ import division
-from __future__ import print_function
 
 import copy
 import csv
@@ -9,14 +8,9 @@ import math
 
 
 class Matrix:
+
     def __init__(self, data):
         self.data = data
-
-    def __getitem__(self, item):
-        return self.data[item]
-
-    def __len__(self):
-        return len(self.data)
 
     def __str__(self):
         string = ''
@@ -27,36 +21,30 @@ class Matrix:
         return string
 
     def __add__(self, other):
-        A = self.data
-        B = other.data
-        if len(A) != len(B) or len(A[0]) != len(B[0]):
+        if len(self) != len(other) or len(self[0]) != len(other[0]):
             raise ValueError('Incompatible matrix sizes for addition. Matrix A is {}x{}, but matrix B is {}x{}.'
-                             .format(len(A), len(A[0]), len(B), len(B[0])))
-        rows = len(A)
-        cols = len(A[0])
+                             .format(len(self), len(self[0]), len(other), len(other[0])))
+        rows = len(self)
+        cols = len(self[0])
 
-        return Matrix([[A[row][col] + B[row][col] for col in range(cols)] for row in range(rows)])
+        return Matrix([[self[row][col] + other[row][col] for col in range(cols)] for row in range(rows)])
 
     def __sub__(self, other):
-        A = self.data
-        B = other.data
-        if len(A) != len(B) or len(A[0]) != len(B[0]):
+        if len(self) != len(other) or len(self[0]) != len(other[0]):
             raise ValueError('Incompatible matrix sizes for subtraction. Matrix A is {}x{}, but matrix B is {}x{}.'
-                             .format(len(A), len(A[0]), len(B), len(B[0])))
-        rows = len(A)
-        cols = len(A[0])
+                             .format(len(self), len(self[0]), len(other), len(other[0])))
+        rows = len(self)
+        cols = len(self[0])
 
-        return Matrix([[A[row][col] - B[row][col] for col in range(cols)] for row in range(rows)])
+        return Matrix([[self[row][col] - other[row][col] for col in range(cols)] for row in range(rows)])
 
     def __mul__(self, other):
-        A = self.data
-        B = other.data
-        m = len(A[0])
-        n = len(A)
-        p = len(B[0])
-        if m != len(B):
+        m = len(self[0])
+        n = len(self)
+        p = len(other[0])
+        if m != len(other):
             raise ValueError('Incompatible matrix sizes for multiplication. Matrix A is {}x{}, but matrix B is {}x{}.'
-                             .format(n, m, len(B), p))
+                             .format(n, m, len(other), p))
 
         # Inspired from https://en.wikipedia.org/wiki/Matrix_multiplication
         product = Matrix.empty(n, p)
@@ -64,16 +52,24 @@ class Matrix:
             for j in range(p):
                 row_sum = 0
                 for k in range(m):
-                    row_sum += A[i][k] * B[k][j]
+                    row_sum += self[i][k] * other[k][j]
                 product[i][j] = row_sum
         return product
+
+    def __deepcopy__(self):
+        return Matrix(copy.deepcopy(self.data))
+
+    def __getitem__(self, item):
+        return self.data[item]
+
+    def __len__(self):
+        return len(self.data)
 
     def is_positive_definite(self):
         A = copy.deepcopy(self.data)
         n = len(A)
         for j in range(n):
             if A[j][j] <= 0:
-                print(A)
                 return False
             A[j][j] = math.sqrt(A[j][j])
             for i in range(j + 1, n):
@@ -83,9 +79,12 @@ class Matrix:
         return True
 
     def transpose(self):
-        rows = len(self.data)
-        cols = len(self.data[0])
+        rows = len(self)
+        cols = len(self[0])
         return Matrix([[self.data[row][col] for row in range(rows)] for col in range(cols)])
+
+    def empty_copy(self):
+        return Matrix.empty(len(self), len(self[0]))
 
     @staticmethod
     def multiply(*matrices):

@@ -2,7 +2,7 @@ from __future__ import division
 
 from linear_networks import solve_linear_network, csv_to_network_branch_matrices
 from choleski import choleski_solve
-from positive_definite_matrices import Matrix
+from matrices import Matrix
 
 NETWORK_DATA_DIRECTORY = 'network_data'
 

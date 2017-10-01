@@ -1,6 +1,6 @@
 from __future__ import division
 
-from linear_networks import solve_linear_network
+from linear_networks import solve_linear_network, csv_to_network_branch_matrices
 from choleski import choleski_solve
 from matrix_utilities import Matrix
 
@@ -51,7 +51,7 @@ def q1c():
 def q1d():
     for i in range(1, 6):
         A = Matrix.csv_to_matrix('incidence_matrix_{}.csv'.format(i))
-        Y, J, E = Matrix.csv_to_network_branch_matrices('network_branches_{}.csv'.format(i))
+        Y, J, E = csv_to_network_branch_matrices('network_branches_{}.csv'.format(i))
         print('Y: {}'.format(Y))
         print('J: {}'.format(J))
         print('E: {}'.format(E))

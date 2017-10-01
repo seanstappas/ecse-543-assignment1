@@ -1,9 +1,10 @@
-from linear_networks import create_finite_difference_mesh
+from linear_networks import create_incidence_matrix_from_mesh
 
 
 def q1a():
-    x = create_finite_difference_mesh(2, 4)
-    print(x)
+    for n in range(2, 11):
+        x = create_incidence_matrix_from_mesh(n, 2 * n)
+        print(x)
 
 
 if __name__ == '__main__':

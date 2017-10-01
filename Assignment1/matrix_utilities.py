@@ -24,7 +24,7 @@ class Matrix:
         for row in self.data:
             string += '\n'
             for val in row:
-                string += str(val) + ' '
+                string += '{: >4}'.format(val)
         return string
 
     def __add__(self, other):
@@ -134,24 +134,3 @@ class Matrix:
             for row_number, row in enumerate(reader):
                 data.append([literal_eval(val) for val in row])
             return Matrix(data)
-
-    @staticmethod
-    def csv_to_network_branch_matrices(filename):
-        with open(filename, 'r') as csv_file:
-            reader = csv.reader(csv_file)
-            J = []
-            R = []
-            E = []
-            for row in reader:
-                J_k = float(row[0])
-                R_k = float(row[1])
-                E_k = float(row[2])
-                J.append(J_k)
-                R.append(1 / R_k)
-                E.append(E_k)
-
-            Y = Matrix.diagonal(R)
-            J = Matrix.column_vector(J)
-            E = Matrix.column_vector(E)
-
-            return Y, J, E

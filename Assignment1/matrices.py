@@ -108,12 +108,16 @@ class Matrix:
 
     @staticmethod
     def identity(n):
-        return Matrix([[1 if row == col else 0 for col in range(n)] for row in range(n)])
+        return Matrix.diagonal_single_value(1, n)
 
     @staticmethod
     def diagonal(values):
         n = len(values)
         return Matrix([[values[row] if row == col else 0 for col in range(n)] for row in range(n)])
+
+    @staticmethod
+    def diagonal_single_value(value, n):
+        return Matrix([[value if row == col else 0 for col in range(n)] for row in range(n)])
 
     @staticmethod
     def column_vector(values):

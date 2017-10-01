@@ -24,22 +24,20 @@ def csv_to_network_branch_matrices(filename):
             J.append(J_k)
             R.append(1 / R_k)
             E.append(E_k)
-
         Y = Matrix.diagonal(R)
         J = Matrix.column_vector(J)
         E = Matrix.column_vector(E)
-
         return Y, J, E
 
 
-def create_network_matrices_mesh(rows, cols, resistance, test_current):
+def create_network_matrices_mesh(rows, cols, branch_resistance, test_current):
     num_horizontal_branches = (cols - 1) * rows
     num_vertical_branches = (rows - 1) * cols
     num_branches = num_horizontal_branches + num_vertical_branches + 1
     num_nodes = rows * cols - 1
 
     A = create_incidence_matrix_mesh(cols, num_branches, num_horizontal_branches, num_nodes, num_vertical_branches)
-    Y, J, E = create_network_branch_matrices_mesh(num_branches, resistance, test_current)
+    Y, J, E = create_network_branch_matrices_mesh(num_branches, branch_resistance, test_current)
 
     return A, Y, J, E
 
@@ -80,9 +78,9 @@ def create_network_branch_matrices_mesh(num_branches, resistance, test_current):
     return Y, J, E
 
 
-def find_mesh_resistance(n, resistance, half_bandwidth=None):
+def find_mesh_resistance(n, branch_resistance, half_bandwidth=None):
     test_current = 0.01
-    A, Y, J, E = create_network_matrices_mesh(n, 2 * n, resistance, test_current)
+    A, Y, J, E = create_network_matrices_mesh(n, 2 * n, branch_resistance, test_current)
     x = solve_linear_network(A, Y, J, E, half_bandwidth=half_bandwidth)
     test_voltage = x[2 * n - 1 if n > 1 else 0][0]
     equivalent_resistance = test_voltage / test_current

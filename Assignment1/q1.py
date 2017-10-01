@@ -2,7 +2,7 @@ from __future__ import division
 
 from linear_networks import solve_linear_network, csv_to_network_branch_matrices
 from choleski import choleski_solve
-from matrix_utilities import Matrix
+from matrices import Matrix
 
 L_2 = Matrix([
     [5, 0],
@@ -32,12 +32,14 @@ xs = [x_2, x_3, x_4]
 
 
 def q1b():
+    print('=== Question 1(b) ===')
     for count, A in enumerate(matrices):
         n = count + 2
         print('n={} matrix is positive-definite: {}'.format(n, A.is_positive_definite()))
 
 
 def q1c():
+    print('=== Question 1(c) ===')
     for x, A in zip(xs, matrices):
         b = A * x
         print('A: {}'.format(A))
@@ -49,6 +51,7 @@ def q1c():
 
 
 def q1d():
+    print('=== Question 1(d) ===')
     for i in range(1, 6):
         A = Matrix.csv_to_matrix('incidence_matrix_{}.csv'.format(i))
         Y, J, E = csv_to_network_branch_matrices('network_branches_{}.csv'.format(i))

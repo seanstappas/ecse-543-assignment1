@@ -19,12 +19,11 @@ class Matrix:
         return len(self.data)
 
     def __str__(self):
-        # return self.data.__str__()
         string = ''
         for row in self.data:
             string += '\n'
             for val in row:
-                string += '{: >4}'.format(val)
+                string += '{: .3f} '.format(val)
         return string
 
     def __add__(self, other):

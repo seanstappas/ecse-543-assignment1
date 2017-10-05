@@ -42,7 +42,6 @@ def q2d(points):
     plt.grid(True)
     # plt.legend()
     # plt.show()
-
     f.savefig('plots/q2d.pdf', bbox_inches='tight')
 
 

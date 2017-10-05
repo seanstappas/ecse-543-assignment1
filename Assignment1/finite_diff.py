@@ -50,7 +50,7 @@ class OuterConductorBoundary(Boundary):
         return 0
 
     def contains_point(self, x, y):
-        return x == 0 or y == 0
+        return x == 0 or y == 0 or x == 0.2 or y == 0.2
 
 
 class QuarterInnerConductorBoundary(Boundary):
@@ -58,7 +58,7 @@ class QuarterInnerConductorBoundary(Boundary):
         return 15
 
     def contains_point(self, x, y):
-        return x >= 0.06 and y >= 0.06
+        return 0.06 <= x <= 0.14 and 0.08 <= y <= 0.12
 
 
 class Guesser:
@@ -96,8 +96,8 @@ class CoaxialCableMeshConstructor(MeshConstructor):
         outer_boundary = OuterConductorBoundary()
         inner_boundary = QuarterInnerConductorBoundary()
         self.boundaries = (inner_boundary, outer_boundary)
-        self.guesser = LinearGuesser(0, 15)
-        self.boundary_size = 0.1
+        self.guesser = RandomGuesser(0, 15)
+        self.boundary_size = 0.2
 
     def construct_mesh(self, h):
         num_mesh_points_along_axis = int(self.boundary_size / h) + 1
@@ -120,8 +120,10 @@ class IterativeRelaxer:
         self.phi = phi
         self.boundary = QuarterInnerConductorBoundary()
         self.h = h
+        self.num_iterations = 0
 
     def relaxation(self):
+        self.num_iterations += 1
         phi_new = copy.deepcopy(self.phi)
         for i in range(1, len(self.phi) - 1):
             for j in range(1, len(self.phi[0]) - 1):
@@ -138,10 +140,21 @@ class IterativeRelaxer:
             for j in range(1, len(self.phi[0]) - 1):
                 x = i * self.h
                 y = j * self.h
-                if not self.boundary.contains_point(x, y) and self.residual(i, j) > self.epsilon:
+                if not self.boundary.contains_point(x, y) and self.residual(i, j) >= self.epsilon:
                     return False
         return True
 
     def residual(self, i, j):
         return self.phi[i + 1][j] + self.phi[i - 1][j] + self.phi[i][j + 1] + self.phi[i][j - 1] - 4 * self.phi[i][j]
 
+    def get_potential(self, x, y):
+        i = int(x / self.h)
+        j = int(y / self.h)
+        return self.phi[i][j]
+
+
+def successive_over_relaxation(omega, epsilon, phi, h):
+    relaxer = SuccessiveOverRelaxer(omega)
+    iter_relaxer = IterativeRelaxer(relaxer, epsilon, phi, h)
+    iter_relaxer.relaxation()
+    return iter_relaxer

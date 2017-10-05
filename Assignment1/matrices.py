@@ -17,7 +17,7 @@ class Matrix:
         for row in self.data:
             string += '\n'
             for val in row:
-                string += '{: .3f} '.format(val)
+                string += '{:6.2f} '.format(val)
         return string
 
     def __add__(self, other):

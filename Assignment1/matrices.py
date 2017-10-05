@@ -56,7 +56,7 @@ class Matrix:
                 product[i][j] = row_sum
         return product
 
-    def __deepcopy__(self):
+    def __deepcopy__(self, memo):
         return Matrix(copy.deepcopy(self.data))
 
     def __getitem__(self, item):

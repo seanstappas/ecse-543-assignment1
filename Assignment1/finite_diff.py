@@ -158,3 +158,10 @@ def successive_over_relaxation(omega, epsilon, phi, h):
     iter_relaxer = IterativeRelaxer(relaxer, epsilon, phi, h)
     iter_relaxer.relaxation()
     return iter_relaxer
+
+
+def jacobi_relaxation(epsilon, phi, h):
+    relaxer = JacobiRelaxer()
+    iter_relaxer = IterativeRelaxer(relaxer, epsilon, phi, h)
+    iter_relaxer.relaxation()
+    return iter_relaxer

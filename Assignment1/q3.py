@@ -7,11 +7,13 @@ from matplotlib.ticker import MaxNLocator
 
 from matrices import Matrix
 from finite_diff import SuccessiveOverRelaxer, OuterConductorBoundary, QuarterInnerConductorBoundary, \
-    CoaxialCableMeshConstructor, JacobiRelaxer, IterativeRelaxer, successive_over_relaxation
+    CoaxialCableMeshConstructor, JacobiRelaxer, IterativeRelaxer, successive_over_relaxation, jacobi_relaxation
 
 epsilon = 0.00001
 x = 0.06
 y = 0.04
+
+NUM_H_ITERATIONS = 2
 
 
 def q3b():
@@ -55,10 +57,11 @@ def q3b():
 
 
 def q3c(omega):
+    print('=== Question 3(c) ===')
     h = 0.04
     h_values = []
     potential_values = []
-    for i in range(4):
+    for i in range(NUM_H_ITERATIONS):
         h = h / 2
         print('h: {}'.format(h))
         phi = CoaxialCableMeshConstructor().construct_mesh(h)
@@ -78,6 +81,32 @@ def q3c(omega):
     f.savefig('plots/q3c.pdf', bbox_inches='tight')
 
 
+def q3d():
+    print('=== Question 3(d) ===')
+    h = 0.04
+    h_values = []
+    potential_values = []
+    for i in range(NUM_H_ITERATIONS):
+        h = h / 2
+        print('h: {}'.format(h))
+        phi = CoaxialCableMeshConstructor().construct_mesh(h)
+        iter_relaxer = jacobi_relaxation(epsilon, phi, h)
+        potential = iter_relaxer.get_potential(x, y)
+
+        h_values.append(1 / h)
+        potential_values.append(potential)
+
+    f = plt.figure()
+    x_range = h_values
+    y_range = potential_values
+    plt.plot(x_range, y_range, 'o-', label='Potential at (0.06, 0.04)')
+    plt.xlabel('1 / h')
+    plt.ylabel('Potential at (0.06, 0.04)')
+    plt.grid(True)
+    f.savefig('plots/q3d.pdf', bbox_inches='tight')
+
+
 if __name__ == '__main__':
     best_omega = q3b()
     q3c(best_omega)
+    q3d()  # TODO: Exploit symmetry of grid

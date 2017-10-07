@@ -1,0 +1,52 @@
+C:\Python27\python.exe E:/Users/Sean/PycharmProjects/ecse-543/Assignment1/q3.py
+=== Question 3(b) ===
+Omega: 1.0
+Num iterations: 9
+Potential at (0.06, 0.04): 5.594 V
+Omega: 1.1
+Num iterations: 20
+Potential at (0.06, 0.04): 5.527 V
+Omega: 1.2
+Num iterations: 17
+Potential at (0.06, 0.04): 5.527 V
+Omega: 1.3
+Num iterations: 20
+Potential at (0.06, 0.04): 5.526 V
+Omega: 1.4
+Num iterations: 23
+Potential at (0.06, 0.04): 5.526 V
+Omega: 1.5
+Num iterations: 28
+Potential at (0.06, 0.04): 5.526 V
+Omega: 1.6
+Num iterations: 35
+Potential at (0.06, 0.04): 5.526 V
+Omega: 1.7
+Num iterations: 48
+Potential at (0.06, 0.04): 5.526 V
+Omega: 1.8
+Num iterations: 72
+Potential at (0.06, 0.04): 5.526 V
+Omega: 1.9
+Num iterations: 148
+Potential at (0.06, 0.04): 5.526 V
+Best number of iterations: 9
+Best omega: 1.0
+=== Question 3(c) ===
+h: 0.02
+1/h: 50.0
+Num iterations: 10
+Potential at (0.06, 0.04): 5.536 V
+h: 0.01
+1/h: 100.0
+Num iterations: 19
+Potential at (0.06, 0.04): 5.785 V
+=== Question 3(d) ===
+h: 0.02
+Num iterations: 73
+Potential at (0.06, 0.04): 5.526 V
+h: 0.01
+Num iterations: 319
+Potential at (0.06, 0.04): 5.351 V
+
+Process finished with exit code 0

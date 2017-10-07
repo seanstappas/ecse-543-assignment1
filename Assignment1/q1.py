@@ -4,7 +4,7 @@ from linear_networks import solve_linear_network, csv_to_network_branch_matrices
 from choleski import choleski_solve
 from matrices import Matrix
 
-NETWORK_DATA_DIRECTORY = 'network_data'
+NETWORK_DIRECTORY = 'network_data'
 
 L_2 = Matrix([
     [5, 0],
@@ -54,8 +54,8 @@ def q1c():
 def q1d():
     print('=== Question 1(d) ===')
     for i in range(1, 6):
-        A = Matrix.csv_to_matrix('{}/incidence_matrix_{}.csv'.format(NETWORK_DATA_DIRECTORY, i))
-        Y, J, E = csv_to_network_branch_matrices('{}/network_branches_{}.csv'.format(NETWORK_DATA_DIRECTORY, i))
+        A = Matrix.csv_to_matrix('{}/incidence_matrix_{}.csv'.format(NETWORK_DIRECTORY, i))
+        Y, J, E = csv_to_network_branch_matrices('{}/network_branches_{}.csv'.format(NETWORK_DIRECTORY, i))
         # print('Y: {}'.format(Y))
         # print('J: {}'.format(J))
         # print('E: {}'.format(E))

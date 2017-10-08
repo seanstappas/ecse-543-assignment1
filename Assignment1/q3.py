@@ -3,6 +3,7 @@ from __future__ import division
 import csv
 
 import matplotlib.pyplot as plt
+import time
 
 from finite_diff import CoaxialCableMeshConstructor, successive_over_relaxation, jacobi_relaxation
 
@@ -10,13 +11,12 @@ epsilon = 0.00001
 x = 0.06
 y = 0.04
 
-NUM_H_ITERATIONS = 4
+NUM_H_ITERATIONS = 5
 
 
 def q3b():
     print('=== Question 3(b) ===')
     h = 0.02
-    phi = CoaxialCableMeshConstructor().construct_symmetric_mesh(h)
     min_num_iterations = float('inf')
     best_omega = float('inf')
 
@@ -27,6 +27,9 @@ def q3b():
     for omega_diff in range(10):
         omega = 1 + omega_diff / 10
         print('Omega: {}'.format(omega))
+        phi = CoaxialCableMeshConstructor().construct_symmetric_mesh(h)
+        print('Initial guess:')
+        print(phi.mirror_horizontal())
         iter_relaxer = successive_over_relaxation(omega, epsilon, phi, h)
         # print(iter_relaxer.phi)
         print('Num iterations: {}'.format(iter_relaxer.num_iterations))
@@ -39,7 +42,8 @@ def q3b():
         omegas.append(omega)
         num_iterations.append(iter_relaxer.num_iterations)
         potentials.append('{:.3f}'.format(potential))
-        print(iter_relaxer.phi.mirror_horizontal())
+        print('Relaxed:')
+        print(phi.mirror_horizontal())
 
     print('Best number of iterations: {}'.format(min_num_iterations))
     print('Best omega: {}'.format(best_omega))
@@ -60,7 +64,7 @@ def q3b():
 
 
 def q3c(omega):
-    print('=== Question 3(c) ===')
+    print('=== Question 3(c): SOR ===')
     h = 0.04
     h_values = []
     potential_values = []
@@ -69,8 +73,9 @@ def q3c(omega):
         h = h / 2
         print('h: {}'.format(h))
         print('1/h: {}'.format(1 / h))
-        phi = CoaxialCableMeshConstructor().construct_simple_mesh(h)
+        phi = CoaxialCableMeshConstructor().construct_symmetric_mesh(h)
         iter_relaxer = successive_over_relaxation(omega, epsilon, phi, h)
+        # print(phi.mirror_horizontal())
         potential = iter_relaxer.get_potential(x, y)
         num_iterations = iter_relaxer.num_iterations
 
@@ -106,7 +111,7 @@ def q3c(omega):
 
 
 def q3d():
-    print('=== Question 3(d) ===')
+    print('=== Question 3(d): Jacobi ===')
     h = 0.04
     h_values = []
     potential_values = []
@@ -114,7 +119,7 @@ def q3d():
     for i in range(NUM_H_ITERATIONS):
         h = h / 2
         print('h: {}'.format(h))
-        phi = CoaxialCableMeshConstructor().construct_simple_mesh(h)
+        phi = CoaxialCableMeshConstructor().construct_symmetric_mesh(h)
         iter_relaxer = jacobi_relaxation(epsilon, phi, h)
         potential = iter_relaxer.get_potential(x, y)
         num_iterations = iter_relaxer.num_iterations
@@ -182,9 +187,11 @@ def save_rows_to_csv(filename, rows, header=None):
 def q3():
     o = q3b()
     h_values, potential_values, iterations_values = q3c(o)
-    _, potential_values_jacobi, iterations_values_jacobi = q3d()  # TODO: Exploit symmetry of grid
+    _, potential_values_jacobi, iterations_values_jacobi = q3d()
     plot_sor_jacobi(h_values, potential_values, potential_values_jacobi, iterations_values, iterations_values_jacobi)
 
 
 if __name__ == '__main__':
+    t = time.time()
     q3()
+    print('Total runtime: {}'.format(time.time() - t))

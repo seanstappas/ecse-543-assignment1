@@ -10,14 +10,13 @@ epsilon = 0.00001
 x = 0.06
 y = 0.04
 
-NUM_H_ITERATIONS = 2
+NUM_H_ITERATIONS = 4
 
 
 def q3b():
     print('=== Question 3(b) ===')
     h = 0.02
-    phi = CoaxialCableMeshConstructor().construct_mesh(h)
-
+    phi = CoaxialCableMeshConstructor().construct_symmetric_mesh(h)
     min_num_iterations = float('inf')
     best_omega = float('inf')
 
@@ -39,7 +38,8 @@ def q3b():
 
         omegas.append(omega)
         num_iterations.append(iter_relaxer.num_iterations)
-        potentials.append(potential)
+        potentials.append('{:.3f}'.format(potential))
+        print(iter_relaxer.phi.mirror_horizontal())
 
     print('Best number of iterations: {}'.format(min_num_iterations))
     print('Best omega: {}'.format(best_omega))
@@ -54,8 +54,7 @@ def q3b():
     f.savefig('report/plots/q3b.pdf', bbox_inches='tight')
 
     save_rows_to_csv('report/csv/q3b_potential.csv', zip(omegas, potentials), header=('Omega', 'Potential (V)'))
-    save_rows_to_csv('report/csv/q3b_iterations.csv', zip(omegas, num_iterations), header=('Omega', 'Number of '
-                                                                                                    'Iterations'))
+    save_rows_to_csv('report/csv/q3b_iterations.csv', zip(omegas, num_iterations), header=('Omega', 'Iterations'))
 
     return best_omega
 
@@ -70,7 +69,7 @@ def q3c(omega):
         h = h / 2
         print('h: {}'.format(h))
         print('1/h: {}'.format(1 / h))
-        phi = CoaxialCableMeshConstructor().construct_mesh(h)
+        phi = CoaxialCableMeshConstructor().construct_simple_mesh(h)
         iter_relaxer = successive_over_relaxation(omega, epsilon, phi, h)
         potential = iter_relaxer.get_potential(x, y)
         num_iterations = iter_relaxer.num_iterations
@@ -79,7 +78,7 @@ def q3c(omega):
         print('Potential at ({}, {}): {:.3f} V'.format(x, y, potential))
 
         h_values.append(1 / h)
-        potential_values.append(potential)
+        potential_values.append('{:.3f}'.format(potential))
         iterations_values.append(num_iterations)
 
     f = plt.figure()
@@ -101,8 +100,9 @@ def q3c(omega):
     f.savefig('report/plots/q3c_iterations.pdf', bbox_inches='tight')
 
     save_rows_to_csv('report/csv/q3c_potential.csv', zip(h_values, potential_values), header=('1/h', 'Potential (V)'))
-    save_rows_to_csv('report/csv/q3c_iterations.csv', zip(h_values, iterations_values), header=('1/h', 'Number of '
-                                                                                                       'Iterations'))
+    save_rows_to_csv('report/csv/q3c_iterations.csv', zip(h_values, iterations_values), header=('1/h', 'Iterations'))
+
+    return h_values, potential_values, iterations_values
 
 
 def q3d():
@@ -114,7 +114,7 @@ def q3d():
     for i in range(NUM_H_ITERATIONS):
         h = h / 2
         print('h: {}'.format(h))
-        phi = CoaxialCableMeshConstructor().construct_mesh(h)
+        phi = CoaxialCableMeshConstructor().construct_simple_mesh(h)
         iter_relaxer = jacobi_relaxation(epsilon, phi, h)
         potential = iter_relaxer.get_potential(x, y)
         num_iterations = iter_relaxer.num_iterations
@@ -123,13 +123,13 @@ def q3d():
         print('Potential at ({}, {}): {:.3f} V'.format(x, y, potential))
 
         h_values.append(1 / h)
-        potential_values.append(potential)
+        potential_values.append('{:.3f}'.format(potential))
         iterations_values.append(num_iterations)
 
     f = plt.figure()
     x_range = h_values
     y_range = potential_values
-    plt.plot(x_range, y_range, 'o-', label='Potential at (0.06, 0.04)')
+    plt.plot(x_range, y_range, 'ro-', label='Potential at (0.06, 0.04)')
     plt.xlabel('1 / h')
     plt.ylabel('Potential at [0.06, 0.04] (V)')
     plt.grid(True)
@@ -138,15 +138,36 @@ def q3d():
     f = plt.figure()
     x_range = h_values
     y_range = iterations_values
-    plt.plot(x_range, y_range, 'o-', label='Number of Iterations')
+    plt.plot(x_range, y_range, 'ro-', label='Number of Iterations')
     plt.xlabel('1 / h')
     plt.ylabel('Number of Iterations')
     plt.grid(True)
     f.savefig('report/plots/q3d_iterations.pdf', bbox_inches='tight')
 
     save_rows_to_csv('report/csv/q3d_potential.csv', zip(h_values, potential_values), header=('1/h', 'Potential (V)'))
-    save_rows_to_csv('report/csv/q3d_iterations.csv', zip(h_values, iterations_values), header=('1/h', 'Number of '
-                                                                                                       'Iterations'))
+    save_rows_to_csv('report/csv/q3d_iterations.csv', zip(h_values, iterations_values), header=('1/h', 'Iterations'))
+
+    return h_values, potential_values, iterations_values
+
+
+def plot_sor_jacobi(h_values, potential_values, potential_values_jacobi, iterations_values, iterations_values_jacobi):
+    f = plt.figure()
+    plt.plot(h_values, potential_values, 'o-', label='SOR')
+    plt.plot(h_values, potential_values_jacobi, 'ro-', label='Jacobi')
+    plt.xlabel('1 / h')
+    plt.ylabel('Potential at [0.06, 0.04] (V)')
+    plt.grid(True)
+    plt.legend()
+    f.savefig('report/plots/q3d_potential_comparison.pdf', bbox_inches='tight')
+
+    f = plt.figure()
+    plt.plot(h_values, iterations_values, 'o-', label='SOR')
+    plt.plot(h_values, iterations_values_jacobi, 'ro-', label='Jacobi')
+    plt.xlabel('1 / h')
+    plt.ylabel('Number of Iterations')
+    plt.grid(True)
+    plt.legend()
+    f.savefig('report/plots/q3d_iterations_comparison.pdf', bbox_inches='tight')
 
 
 def save_rows_to_csv(filename, rows, header=None):
@@ -158,7 +179,12 @@ def save_rows_to_csv(filename, rows, header=None):
             writer.writerow(row)
 
 
-if __name__ == '__main__':
+def q3():
     o = q3b()
-    q3c(o)
-    q3d()  # TODO: Exploit symmetry of grid
+    h_values, potential_values, iterations_values = q3c(o)
+    _, potential_values_jacobi, iterations_values_jacobi = q3d()  # TODO: Exploit symmetry of grid
+    plot_sor_jacobi(h_values, potential_values, potential_values_jacobi, iterations_values, iterations_values_jacobi)
+
+
+if __name__ == '__main__':
+    q3()

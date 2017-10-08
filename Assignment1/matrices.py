@@ -83,6 +83,11 @@ class Matrix:
         cols = len(self[0])
         return Matrix([[self.data[row][col] for row in range(rows)] for col in range(cols)])
 
+    def mirror_horizontal(self):
+        rows = len(self)
+        cols = len(self[0])
+        return Matrix([[self.data[rows - row - 1][col] for col in range(cols)] for row in range(rows)])
+
     def empty_copy(self):
         return Matrix.empty(len(self), len(self[0]))
 

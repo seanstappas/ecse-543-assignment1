@@ -39,7 +39,7 @@ def plot_runtime(points, banded):
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     x_range = points.keys()
     y_range = points.values()
-    plt.plot(x_range, y_range, 'o-')
+    plt.plot(x_range, y_range, '{}o-'.format('r' if banded else ''))
     plt.xlabel('N')
     plt.ylabel('Runtime (s)')
     plt.grid(True)
@@ -78,8 +78,12 @@ def q2d(points):
     f.savefig('report/plots/q2d.pdf', bbox_inches='tight')
 
 
-if __name__ == '__main__':
+def q2():
     _, runtimes1 = q2ab()
     pts, runtimes2 = q2c()
     plot_runtimes(runtimes1, runtimes2)
     q2d(pts)
+
+
+if __name__ == '__main__':
+    q2()

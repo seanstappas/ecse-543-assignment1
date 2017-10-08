@@ -30,7 +30,7 @@ def elimination(A, b):
                 A[i][k] = A[i][k] - A[i][j] * A[k][j]
 
 
-def elimination_banded(A, b, half_bandwidth):
+def elimination_banded(A, b, half_bandwidth):  # TODO: Keep limited band in memory
     n = len(A)
     for j in range(n):
         if A[j][j] <= 0:

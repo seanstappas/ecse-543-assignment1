@@ -63,7 +63,11 @@ def q1d():
         print('Solved for x in network {}: {}'.format(i, x))  # TODO: Create my own test circuits here
 
 
-if __name__ == '__main__':
+def q1():
     q1b()
     q1c()
     q1d()
+
+
+if __name__ == '__main__':
+    q1()

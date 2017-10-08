@@ -17,6 +17,7 @@
 \usepackage{listings}
 \usepackage{titlesec}
 \usepackage{minted}
+\usepackage{booktabs}
 \usepackage{csvsimple}
 
 % Custom commands
@@ -53,7 +54,7 @@
 	
 	\subsection{Linear Networks}
 	% Write a program that reads from a file a list of network branches (Jk, Rk, Ek) and a reduced incidence matrix, and finds the voltages at the nodes of the network. Use the code from part (a) to solve the matrix problem. Explain how the data is organized and read from the file. Test the program with a few small networks that you can check by hand. Compare the results for your test circuits with the analytical results you obtained by hand. Cleary specify each of the test circuits used with a labeled schematic diagram.
-	% Put pictures of test circuits! (create your own as well as the provided ones…)
+	% TODO: Put pictures of test circuits! (create your own as well as the provided ones…)
 	
 	\section{Finite Difference Mesh}
 	
@@ -117,8 +118,19 @@
 		\label{fig:q3b}
 	\end{figure}
 
-	\captionof{table}{Number of iterations versus $\omega$.}  % TODO: fix table caption
-	\csvautotabular{csv/q3b_iterations.csv}
+	\begin{table}[!htb]
+		\centering
+		\caption{Number of iterations versus $\omega$.}
+		\csvautobooktabular{csv/q3b_iterations.csv}
+		\label{tabel:q3b_iterations}
+	\end{table}
+
+	\begin{table}[!htb]
+		\centering
+		\caption{Potential versus $\omega$.}
+		\csvautobooktabular{csv/q3b_potential.csv}
+		\label{tabel:q3b_potential}
+	\end{table}
 	
 	\subsection{Varying $h$}
 	% With an appropriate value of w, chosen from the above experiment, explore the effect of	decreasing h on the potential. Use values of h = 0.02, 0.01, 0.005, etc, and both tabulate and	plot the corresponding values of potential at (x, y) = (0.06, 0.04) versus 1/h. What do you think is the potential at (0.06, 0.04), to three significant figures? Also, tabulate and plot the number of iterations versus 1/h. Comment on the properties of both plots.
@@ -138,6 +150,20 @@
 		{Potential at $(0.06, 0.04)$ found by SOR versus $1/h$.}
 		\label{fig:q3c_potential}
 	\end{figure}
+
+	\begin{table}[!htb]
+		\centering
+		\caption{Number of iterations versus $\omega$.}
+		\csvautobooktabular{csv/q3c_iterations.csv}
+		\label{tabel:q3c_iterations}
+	\end{table}
+	
+	\begin{table}[!htb]
+		\centering
+		\caption{Potential versus $\omega$.}
+		\csvautobooktabular{csv/q3c_potential.csv}
+		\label{tabel:q3c_potential}
+	\end{table}
 	
 	\subsection{Jacobi Method}
 	% Use the Jacobi method to solve this problem for the same values of h used in part (c). Tabulate and plot the values of the potential at (x, y) = (0.06, 0.04) versus 1/h and the number of iterations versus 1/h. Comment on the properties of both plots and compare to those of SOR.
@@ -156,6 +182,35 @@
 		\caption
 		{Potential at $(0.06, 0.04)$ found by the Jacobi method versus $1/h$.}
 		\label{fig:q3d_potential}
+	\end{figure}
+
+	\begin{table}[!htb]
+		\centering
+		\caption{Number of iterations versus $\omega$.}
+		\csvautobooktabular{csv/q3d_iterations.csv}
+		\label{tabel:q3d_iterations}
+	\end{table}
+	
+	\begin{table}[!htb]
+		\centering
+		\caption{Potential versus $\omega$.}
+		\csvautobooktabular{csv/q3d_potential.csv}
+		\label{tabel:q3d_potential}
+	\end{table}
+
+	\begin{table}[!htb]
+	\centering
+	\caption{Potential versus $\omega$.}
+	\csvautobooktabular{csv/q3d_potential.csv}
+	\label{tabel:q3d_iterations_comparison}
+	\end{table}
+
+	\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\columnwidth]{plots/q3d_iterations_comparison.pdf}
+	\caption
+	{Comparison of number of iterations when using SOR and Jacobi methods versus $1/h$.}
+	\label{fig:q3d_iterations_comparison}
 	\end{figure}
 	
 	\subsection{Non-uniform Node Spacing}

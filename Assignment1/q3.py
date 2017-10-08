@@ -11,7 +11,7 @@ epsilon = 0.00001
 x = 0.06
 y = 0.04
 
-NUM_H_ITERATIONS = 5
+NUM_H_ITERATIONS = 6
 
 
 def q3b():

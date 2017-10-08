@@ -1,42 +1,41 @@
-C:\Python27\python.exe E:/Users/Sean/PycharmProjects/ecse-543/Assignment1/q2.py
 === Question 2(a)(b) ===
-Equivalent resistance for 2x4 mesh: 1875.00 Ohms.
-Runtime: 0.00100016593933 s.
-Equivalent resistance for 3x6 mesh: 2379.55 Ohms.
-Runtime: 0.0169999599457 s.
-Equivalent resistance for 4x8 mesh: 2741.03 Ohms.
-Runtime: 0.0999999046326 s.
-Equivalent resistance for 5x10 mesh: 3022.82 Ohms.
-Runtime: 0.400000095367 s.
-Equivalent resistance for 6x12 mesh: 3253.68 Ohms.
-Runtime: 1.23199987411 s.
-Equivalent resistance for 7x14 mesh: 3449.17 Ohms.
-Runtime: 3.22600007057 s.
-Equivalent resistance for 8x16 mesh: 3618.67 Ohms.
-Runtime: 7.28600001335 s.
-Equivalent resistance for 9x18 mesh: 3768.29 Ohms.
-Runtime: 14.7049999237 s.
-Equivalent resistance for 10x20 mesh: 3902.19 Ohms.
-Runtime: 28.2150001526 s.
-=== Question 2(c) ===
 Equivalent resistance for 2x4 mesh: 1875.00 Ohms.
 Runtime: 0.000999927520752 s.
 Equivalent resistance for 3x6 mesh: 2379.55 Ohms.
+Runtime: 0.018000125885 s.
+Equivalent resistance for 4x8 mesh: 2741.03 Ohms.
+Runtime: 0.102999925613 s.
+Equivalent resistance for 5x10 mesh: 3022.82 Ohms.
+Runtime: 0.406000137329 s.
+Equivalent resistance for 6x12 mesh: 3253.68 Ohms.
+Runtime: 1.26799988747 s.
+Equivalent resistance for 7x14 mesh: 3449.17 Ohms.
+Runtime: 3.23900008202 s.
+Equivalent resistance for 8x16 mesh: 3618.67 Ohms.
+Runtime: 7.42700004578 s.
+Equivalent resistance for 9x18 mesh: 3768.29 Ohms.
+Runtime: 15.246999979 s.
+Equivalent resistance for 10x20 mesh: 3902.19 Ohms.
+Runtime: 29.0559999943 s.
+=== Question 2(c) ===
+Equivalent resistance for 2x4 mesh: 1875.00 Ohms.
+Runtime: 0.00200009346008 s.
+Equivalent resistance for 3x6 mesh: 2379.55 Ohms.
 Runtime: 0.0160000324249 s.
 Equivalent resistance for 4x8 mesh: 2741.03 Ohms.
-Runtime: 0.0950000286102 s.
+Runtime: 0.095999956131 s.
 Equivalent resistance for 5x10 mesh: 3022.82 Ohms.
-Runtime: 0.371000051498 s.
+Runtime: 0.391999959946 s.
 Equivalent resistance for 6x12 mesh: 3253.68 Ohms.
-Runtime: 1.19799995422 s.
+Runtime: 1.21600008011 s.
 Equivalent resistance for 7x14 mesh: 3449.17 Ohms.
-Runtime: 3.08500003815 s.
+Runtime: 3.05900001526 s.
 Equivalent resistance for 8x16 mesh: 3618.67 Ohms.
-Runtime: 6.8789999485 s.
+Runtime: 7.0720000267 s.
 Equivalent resistance for 9x18 mesh: 3768.29 Ohms.
-Runtime: 13.9990000725 s.
+Runtime: 14.5319998264 s.
 Equivalent resistance for 10x20 mesh: 3902.19 Ohms.
-Runtime: 27.0169999599 s.
+Runtime: 28.1089999676 s.
 === Question 2(d) ===
 
 Process finished with exit code 0

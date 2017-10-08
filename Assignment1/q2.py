@@ -1,3 +1,4 @@
+import csv
 import time
 
 import matplotlib.pyplot as plt
@@ -15,9 +16,9 @@ def find_mesh_resistances(banded=False):
         half_bandwidth = 2 * n + 1 if banded else None
         equivalent_resistance = find_mesh_resistance(n, branch_resistance, half_bandwidth=half_bandwidth)
         print('Equivalent resistance for {}x{} mesh: {:.2f} Ohms.'.format(n, 2 * n, equivalent_resistance))
-        points[n] = equivalent_resistance
+        points[n] = '{:.3f}'.format(equivalent_resistance)
         runtime = time.time() - start_time
-        runtimes[n] = runtime
+        runtimes[n] = '{:.3f}'.format(runtime)
         print('Runtime: {} s.'.format(runtime))
     plot_runtime(runtimes, banded)
     return points, runtimes
@@ -25,12 +26,16 @@ def find_mesh_resistances(banded=False):
 
 def q2ab():
     print('=== Question 2(a)(b) ===')
-    return find_mesh_resistances(banded=False)
+    _, runtimes = find_mesh_resistances(banded=False)
+    save_rows_to_csv('report/csv/q2b.csv', zip(runtimes.keys(), runtimes.values()), header=('N', 'Runtime (s)'))
+    return runtimes
 
 
 def q2c():
     print('=== Question 2(c) ===')
-    return find_mesh_resistances(banded=True)
+    pts, runtimes = find_mesh_resistances(banded=True)
+    save_rows_to_csv('report/csv/q2c.csv', zip(runtimes.keys(), runtimes.values()), header=('N', 'Runtime (s)'))
+    return pts, runtimes
 
 
 def plot_runtime(points, banded):
@@ -73,16 +78,24 @@ def q2d(points):
     plt.xlabel('N')
     plt.ylabel('R ($\Omega$)')
     plt.grid(True)
-    # plt.legend()
-    # plt.show()
     f.savefig('report/plots/q2d.pdf', bbox_inches='tight')
+    save_rows_to_csv('report/csv/q2a.csv', zip(points.keys(), points.values()), header=('N', 'R (Ohms)'))
 
 
 def q2():
-    _, runtimes1 = q2ab()
+    runtimes1 = q2ab()
     pts, runtimes2 = q2c()
     plot_runtimes(runtimes1, runtimes2)
     q2d(pts)
+
+
+def save_rows_to_csv(filename, rows, header=None):
+    with open(filename, "wb") as f:
+        writer = csv.writer(f)
+        if header is not None:
+            writer.writerow(header)
+        for row in rows:
+            writer.writerow(row)
 
 
 if __name__ == '__main__':

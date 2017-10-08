@@ -1,4 +1,3 @@
-C:\Python27\python.exe E:/Users/Sean/PycharmProjects/ecse-543/Assignment1/q1.py
 === Question 1(b) ===
 n=2 matrix is positive-definite: True
 n=3 matrix is positive-definite: True

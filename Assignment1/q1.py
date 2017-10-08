@@ -48,7 +48,7 @@ def q1c():
 
         x_choleski = choleski_solve(A, b)
         print('Expected x: {}'.format(x))
-        print('Actual x: {}'.format(x_choleski))  # TODO: Assert equal here (to number of sig figs)
+        print('Actual x: {}'.format(x_choleski))
 
 
 def q1d():

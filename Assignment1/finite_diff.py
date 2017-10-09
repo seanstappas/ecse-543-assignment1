@@ -22,6 +22,16 @@ class SimpleRelaxer(Relaxer):
         return (phi[i + 1][j] + phi[i - 1][j] + phi[i][j + 1] + phi[i][j - 1]) / 4
 
 
+class NonUniformRelaxer:
+    def __init__(self):
+        pass
+
+    def relax(self, phi, i, j, a1, a2, b1, b2):
+        return ((phi[i - 1][j] / a1 + phi[i + 1][j] / a2) / (a1 + a2)
+                + (phi[i][j - 1] / b1 + phi[i][j + 1] / b2) / (b1 + b2)) \
+               / (1 / (a1 * a2) + 1 / (b1 * b2))
+
+
 class SuccessiveOverRelaxer(Relaxer):
     def __init__(self, omega):
         self.gauss_seidel = SimpleRelaxer()

@@ -283,8 +283,12 @@
 	Theoretically, the five-point difference formula for non-uniform spacing is as follows:
 	
 	\[
-	\phi^{k + 1}_{i,j} = ...
+	\phi^{k + 1}_{i,j} = 
+	\frac{1}{\alpha_1 + \alpha_2}\left(\frac{\phi^k_{i - 1,j}}{\alpha_1} + \frac{\phi^k_{i + 1,j}}{\alpha_2}\right) +
+	\frac{1}{\beta_1 + \beta_2}\left(\frac{\phi^k_{i, j - 1}}{\beta_1} + \frac{\phi^k_{i, j + 1}}{\beta_2}\right)
 	\]
+	
+	This was implemented in the finite difference program, as seen in \autoref{lst:finite_diff}.
 	
 	\onecolumn
 	

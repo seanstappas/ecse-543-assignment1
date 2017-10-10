@@ -95,8 +95,6 @@
 	
 	The runtime data for the mesh resistance solver is tabulated in \autoref{table:q2b} and plotted in \autoref{fig:q2b}. Theoretically, the time complexity of the program should be $O(N^6)$, and this matches the obtained data.
 	
-	% TODO: Polynomial fit to complexity
-	
 	\begin{table}[!htb]
 		\centering
 		\caption{Runtime of mesh resistance solver program versus mesh size $N$.}
@@ -132,7 +130,7 @@
 		\label{fig:q2c}
 	\end{figure}
 
-	% TODO: Fix banded method
+	% TODO: Fix banded method (complexity doesn't make sense...)
 
 	The runtime of the banded and non-banded versions of the program are plotted in \autoref{fig:q2bc}, showing the benefits of banded elimination.
 
@@ -148,8 +146,6 @@
 	% Plot a graph of R versus N. Find a function R(N) that fits the curve reasonably well and is asymptotically correct as N tends to infinity, as far as you can tell.
 	
 	The equivalent mesh resistance $R$ is plotted versus the mesh size $N$ in \autoref{fig:q2d}. The function $R(N)$ appears logarithmic, and a log function does indeed fit the data well.
-	
-	% TODO: Fit log function to graph
 	
 	\begin{figure}[!htb]
 		\centering
@@ -202,8 +198,6 @@
 	
 	With $\omega = 1.3$, the number of iterations of SOR versus $1/h$ is tabulated in \autoref{table:q3c_iterations} and plotted in \autoref{fig:q3c_iterations}. It can be seen that the smaller the node spacing is, the more iterations the program will take to run. Theoretically, the time complexity of the program should be $O(N^3)$, where the finite difference mesh is $N$ by $N$, and this matches the measured data.
 	
-	% TODO: fit complexity of SOR
-	
 	\begin{table}[!htb]
 		\centering
 		\caption{Number of iterations of SOR versus $1/h$. Note that $\omega=1.3$.}
@@ -240,8 +234,6 @@
 	% Use the Jacobi method to solve this problem for the same values of h used in part (c). Tabulate and plot the values of the potential at (x, y) = (0.06, 0.04) versus 1/h and the number of iterations versus 1/h. Comment on the properties of both plots and compare to those of SOR.
 	
 	The number of iterations of the Jacobi method versus $1/h$ is tabulated in \autoref{table:q3d_iterations} and plotted in \autoref{fig:q3d_iterations}. Similarly to SOR, the smaller the node spacing is, the more iterations the program will take to run. We can see however that the Jacobi method takes a much larger number of iterations to converge. Theoretically, the Jacobi method should have a time complexity of $O(N^4)$, and this matches the data.
-	
-	% TODO: fit complexity of Jacobi
 	
 	\begin{table}[!htb]
 		\centering
@@ -288,6 +280,12 @@
 	\subsection{Non-uniform Node Spacing}
 	% Modify the program you wrote in part (a) to use the five-point difference formula derived in	class for non-uniform node spacing. An alternative to using equal node spacing, h, is to use	smaller node spacing in more “difficult” parts of the problem domain. Experiment with a	scheme of this kind and see how accurately you can compute the value of the potential at (x, y)	= (0.06, 0.04) using only as many nodes as for the uniform case h = 0.01 in part (c).
 
+	Theoretically, the five-point difference formula for non-uniform spacing is as follows:
+	
+	\[
+	\phi^{k + 1}_{i,j} = ...
+	\]
+	
 	\onecolumn
 	
 	\appendix

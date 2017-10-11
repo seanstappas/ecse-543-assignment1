@@ -41,5 +41,3 @@ Solved for x in network 5:
   5.00
   3.75
   3.75
-
-Process finished with exit code 0

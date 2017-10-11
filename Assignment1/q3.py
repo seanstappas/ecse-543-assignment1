@@ -33,8 +33,6 @@ def q3b():
         omega = 1 + omega_diff / 10
         print('Omega: {}'.format(omega))
         phi = CoaxialCableMeshConstructor().construct_symmetric_mesh(h)
-        # print('Initial guess:')
-        print(phi.mirror_horizontal())
         iter_relaxer = successive_over_relaxation(omega, epsilon, phi, h)
         print('Quarter grid: {}'.format(phi.mirror_horizontal()))
         # print(iter_relaxer.phi)
@@ -48,7 +46,6 @@ def q3b():
         omegas.append(omega)
         num_iterations.append(iter_relaxer.num_iterations)
         potentials.append('{:.3f}'.format(potential))
-        print('Relaxed:')
 
     print('Best number of iterations: {}'.format(min_num_iterations))
     print('Best omega: {}'.format(best_omega))
@@ -108,7 +105,7 @@ def q3c(omega):
     x_new = np.linspace(x_range[0], x_range[-1], num=len(x_range) * 10)
     polynomial_coeffs = poly.polyfit(x_range, y_range, deg=3)
     polynomial_fit = poly.polyval(x_new, polynomial_coeffs)
-    N = sp.symbols("N")
+    N = sp.symbols("1/h")
     poly_label = sum(sp.S("{:.5f}".format(v)) * N ** i for i, v in enumerate(polynomial_coeffs))
     equation = '${}$'.format(sp.printing.latex(poly_label))
     plt.plot(x_new, polynomial_fit, '{}-'.format('C0'), label=equation)
@@ -167,8 +164,8 @@ def q3d():
     x_new = np.linspace(x_range[0], x_range[-1], num=len(x_range) * 10)
     polynomial_coeffs = poly.polyfit(x_range, y_range, deg=4)
     polynomial_fit = poly.polyval(x_new, polynomial_coeffs)
-    N = sp.symbols("N")
-    poly_label = sum(sp.S("{:.5f}".format(v)) * N ** i for i, v in enumerate(polynomial_coeffs))
+    N = sp.symbols("1/h")
+    poly_label = sum(sp.S("{:.5f}".format(v if i < 3 else -v)) * N ** i for i, v in enumerate(polynomial_coeffs))
     equation = '${}$'.format(sp.printing.latex(poly_label))
     plt.plot(x_new, polynomial_fit, '{}-'.format('C1'), label=equation)
 

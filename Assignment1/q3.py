@@ -10,12 +10,12 @@ import numpy.polynomial.polynomial as poly
 import numpy as np
 import sympy as sp
 
-from finite_diff import CoaxialCableMeshConstructor, successive_over_relaxation, jacobi_relaxation
+from finite_diff import PhiConstructor, successive_over_relaxation, jacobi_relaxation, \
+    non_uniform_successive_over_relaxation
 
-epsilon = 0.00001
-x = 0.06
-y = 0.04
-
+EPSILON = 0.00001
+X_QUERY = 0.06
+Y_QUERY = 0.04
 NUM_H_ITERATIONS = 6
 
 
@@ -32,13 +32,11 @@ def q3b():
     for omega_diff in range(10):
         omega = 1 + omega_diff / 10
         print('Omega: {}'.format(omega))
-        phi = CoaxialCableMeshConstructor().construct_symmetric_mesh(h)
-        iter_relaxer = successive_over_relaxation(omega, epsilon, phi, h)
-        print('Quarter grid: {}'.format(phi.mirror_horizontal()))
-        # print(iter_relaxer.phi)
+        iter_relaxer = successive_over_relaxation(omega, EPSILON, h)
+        print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
         print('Num iterations: {}'.format(iter_relaxer.num_iterations))
-        potential = iter_relaxer.get_potential(x, y)
-        print('Potential at ({}, {}): {:.3f} V'.format(x, y, potential))
+        potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
+        print('Potential at ({}, {}): {:.3f} V'.format(X_QUERY, Y_QUERY, potential))
         if iter_relaxer.num_iterations < min_num_iterations:
             best_omega = omega
         min_num_iterations = min(min_num_iterations, iter_relaxer.num_iterations)
@@ -75,14 +73,13 @@ def q3c(omega):
         h = h / 2
         print('h: {}'.format(h))
         print('1/h: {}'.format(1 / h))
-        phi = CoaxialCableMeshConstructor().construct_symmetric_mesh(h)
-        iter_relaxer = successive_over_relaxation(omega, epsilon, phi, h)
+        iter_relaxer = successive_over_relaxation(omega, EPSILON, h)
         # print(phi.mirror_horizontal())
-        potential = iter_relaxer.get_potential(x, y)
+        potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
         num_iterations = iter_relaxer.num_iterations
 
         print('Num iterations: {}'.format(num_iterations))
-        print('Potential at ({}, {}): {:.3f} V'.format(x, y, potential))
+        print('Potential at ({}, {}): {:.3f} V'.format(X_QUERY, Y_QUERY, potential))
 
         h_values.append(1 / h)
         potential_values.append('{:.3f}'.format(potential))
@@ -133,13 +130,12 @@ def q3d():
     for i in range(NUM_H_ITERATIONS):
         h = h / 2
         print('h: {}'.format(h))
-        phi = CoaxialCableMeshConstructor().construct_symmetric_mesh(h)
-        iter_relaxer = jacobi_relaxation(epsilon, phi, h)
-        potential = iter_relaxer.get_potential(x, y)
+        iter_relaxer = jacobi_relaxation(EPSILON, h)
+        potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
         num_iterations = iter_relaxer.num_iterations
 
         print('Num iterations: {}'.format(num_iterations))
-        print('Potential at ({}, {}): {:.3f} V'.format(x, y, potential))
+        print('Potential at ({}, {}): {:.3f} V'.format(X_QUERY, Y_QUERY, potential))
 
         h_values.append(1 / h)
         potential_values.append('{:.3f}'.format(potential))
@@ -180,6 +176,82 @@ def q3d():
     return h_values, potential_values, iterations_values
 
 
+def q3e():
+    print('=== Question 3(e): Non-Uniform Node Spacing ===')
+
+    print('Jacobi (for reference)')
+    iter_relaxer = jacobi_relaxation(EPSILON, 0.01)
+    print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
+    print('Num iterations: {}'.format(iter_relaxer.num_iterations))
+    jacobi_potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
+    print('Potential at ({}, {}): {:.3f} V'.format(X_QUERY, Y_QUERY, jacobi_potential))
+
+    print('Uniform Mesh (same as Jacobi)')
+    x_values = [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11]
+    y_values = [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11]
+    iter_relaxer = non_uniform_successive_over_relaxation(EPSILON, x_values, y_values)
+    print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
+    print('Num iterations: {}'.format(iter_relaxer.num_iterations))
+    uniform_potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
+    print('Potential at ({}, {}): {:.3f} V'.format(X_QUERY, Y_QUERY, uniform_potential))
+    print('Jacobi potential: {} V, same as uniform potential: {} V'.format(jacobi_potential, uniform_potential))
+
+    print('Non-Uniform (clustered around (0.06, 0.04))')
+    x_values = [0.00, 0.01, 0.02, 0.03, 0.05, 0.055, 0.06, 0.065, 0.07, 0.09, 0.1, 0.11]
+    y_values = [0.00, 0.01, 0.03, 0.035, 0.04, 0.045, 0.05, 0.07, 0.08, 0.09, 0.1, 0.11]
+    iter_relaxer = non_uniform_successive_over_relaxation(EPSILON, x_values, y_values)
+    print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
+    print('Num iterations: {}'.format(iter_relaxer.num_iterations))
+    potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
+    print('Potential at ({}, {}): {:.3f} V'.format(X_QUERY, Y_QUERY, potential))
+
+    print('Non-Uniform (more clustered around (0.06, 0.04))')
+    x_values = [0.00, 0.01, 0.02, 0.03, 0.055, 0.059, 0.06, 0.061, 0.065, 0.09, 0.1, 0.11]
+    y_values = [0.00, 0.01, 0.035, 0.039, 0.04, 0.041, 0.045, 0.07, 0.08, 0.09, 0.1, 0.11]
+    iter_relaxer = non_uniform_successive_over_relaxation(EPSILON, x_values, y_values)
+    print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
+    print('Num iterations: {}'.format(iter_relaxer.num_iterations))
+    potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
+    print('Potential at ({}, {}): {:.3f} V'.format(X_QUERY, Y_QUERY, potential))
+
+    print('Non-Uniform (clustered near outer conductor)')
+    x_values = [0.00, 0.020, 0.032, 0.044, 0.055, 0.06, 0.074, 0.082, 0.089, 0.095, 0.1, 0.15]
+    y_values = [0.00, 0.020, 0.032, 0.04, 0.055, 0.065, 0.074, 0.082, 0.089, 0.095, 0.1, 0.15]
+    iter_relaxer = non_uniform_successive_over_relaxation(EPSILON, x_values, y_values)
+    print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
+    print('Num iterations: {}'.format(iter_relaxer.num_iterations))
+    potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
+    print('Potential at ({}, {}): {:.3f} V'.format(X_QUERY, Y_QUERY, potential))
+
+    print('Non-Uniform (clustered near outer and inner conductors)')
+    x_values = [0.00, 0.007, 0.015, 0.024, 0.034, 0.045, 0.06, 0.076, 0.085, 0.093, 0.1, 0.17]
+    y_values = [0.00, 0.007, 0.015, 0.024, 0.04, 0.045, 0.066, 0.076, 0.085, 0.093, 0.1, 0.17]
+    iter_relaxer = non_uniform_successive_over_relaxation(EPSILON, x_values, y_values)
+    print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
+    print('Num iterations: {}'.format(iter_relaxer.num_iterations))
+    potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
+    print('Potential at ({}, {}): {:.3f} V'.format(X_QUERY, Y_QUERY, potential))
+
+    plot_mesh(x_values, y_values)
+
+
+def plot_mesh(x_values, y_values):
+    f = plt.figure()
+    ax = f.gca()
+    ax.set_aspect('equal', adjustable='box')
+    x_range = []
+    y_range = []
+    for x in x_values[:-1]:
+        for y in y_values[:-1]:
+            x_range.append(x)
+            y_range.append(y)
+    plt.plot(x_range, y_range, 'o', label='Mesh points')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.grid(True)
+    f.savefig('report/plots/q3e.pdf', bbox_inches='tight')
+
+
 def plot_sor_jacobi(h_values, potential_values, potential_values_jacobi, iterations_values, iterations_values_jacobi):
     f = plt.figure()
     plt.plot(h_values, potential_values, 'o-', label='SOR')
@@ -210,13 +282,14 @@ def save_rows_to_csv(filename, rows, header=None):
 
 
 def q3():
-    o = q3b()
-    h_values, potential_values, iterations_values = q3c(o)
-    _, potential_values_jacobi, iterations_values_jacobi = q3d()
-    plot_sor_jacobi(h_values, potential_values, potential_values_jacobi, iterations_values, iterations_values_jacobi)
+    # o = q3b()
+    # h_values, potential_values, iterations_values = q3c(o)
+    # _, potential_values_jacobi, iterations_values_jacobi = q3d()
+    # plot_sor_jacobi(h_values, potential_values, potential_values_jacobi, iterations_values, iterations_values_jacobi)
+    q3e()
 
 
 if __name__ == '__main__':
     t = time.time()
     q3()
-    print('Total runtime: {}'.format(time.time() - t))
+    print('Total runtime: {} s'.format(time.time() - t))

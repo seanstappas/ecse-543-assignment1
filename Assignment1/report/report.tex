@@ -282,18 +282,26 @@
 	
 	\subsection{Non-uniform Node Spacing}
 	% Modify the program you wrote in part (a) to use the five-point difference formula derived in	class for non-uniform node spacing. An alternative to using equal node spacing, h, is to use	smaller node spacing in more “difficult” parts of the problem domain. Experiment with a	scheme of this kind and see how accurately you can compute the value of the potential at (x, y)	= (0.06, 0.04) using only as many nodes as for the uniform case h = 0.01 in part (c).
-
-	Theoretically, the five-point difference formula for non-uniform spacing is as follows:
 	
-	\[
-	\phi^{k + 1}_{i,j} = 
-	\frac{1}{\alpha_1 + \alpha_2}\left(\frac{\phi^k_{i - 1,j}}{\alpha_1} + \frac{\phi^k_{i + 1,j}}{\alpha_2}\right) +
-	\frac{1}{\beta_1 + \beta_2}\left(\frac{\phi^k_{i, j - 1}}{\beta_1} + \frac{\phi^k_{i, j + 1}}{\beta_2}\right)
-	\]
+	First, we adjust the equation derived in class to set $a_1 = \Delta_x\alpha_1$, $a_2 = \Delta_x\alpha_2$, $b_1 = \Delta_y\beta_1$ and $b_2 = \Delta_y\beta_2$. These values correspond to the distances between adjacent nodes \footnote{Note that, in the program, index $i$ is associated to position $x$ and index $j$ is associated to position $y$. This is purely for easier printing of the matrices.}, and can be easily calculated by the program. Then, the five-point difference formula for non-uniform spacing can be seen in \autoref{eq:non_uniform}.
 	
-	This was implemented in the finite difference program, as seen in \autoref{lst:finite_diff}.
+	\begin{align} \label{eq:non_uniform}
+		\begin{split}
+			\phi^{k + 1}_{i,j} = 
+			&\frac{1}{a_1 + a_2}\left(\frac{\phi^k_{i - 1,j}}{a_1} + \frac{\phi^k_{i + 1,j}}{a_2}\right) + \\
+			&\frac{1}{b_1 + b_2}\left(\frac{\phi^k_{i, j - 1}}{b_1} + \frac{\phi^k_{i, j + 1}}{b_2}\right)
+		\end{split}
+	\end{align}
 	
-	% TODO: Compute more accurate value for potential here
+	This was implemented in the finite difference program, as seen in \autoref{lst:finite_diff}. As can be seen in this code, many different mesh arrangements were tested. The arrangement that was chosen can be seen in \autoref{fig:q3e}. The potential obtained from this arrangement is \SI{5.083}{\volt}, which seems like a more accurate potential value.
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\columnwidth]{plots/q3e.pdf}
+		\caption
+		{Final mesh arrangement used for non-uniform node spacing. Each point corresponds to a mesh point.}
+		\label{fig:q3e}
+	\end{figure}
 	
 	\onecolumn
 	

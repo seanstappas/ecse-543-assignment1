@@ -6,12 +6,28 @@ from choleski import choleski_solve
 
 
 def solve_linear_network(A, Y, J, E, half_bandwidth=None):
+    """
+    Solve the linear resistive network described by the given matrices.
+
+    :param A: the incidence matrix
+    :param Y: the admittance matrix
+    :param J: the current source matrix
+    :param E: the voltage source matrix
+    :param half_bandwidth:
+    :return: the solved voltage matrix
+    """
     A_new = A * Y * A.transpose()
     b = A * (J - Y * E)
     return choleski_solve(A_new, b, half_bandwidth=half_bandwidth)
 
 
 def csv_to_network_branch_matrices(filename):
+    """
+    Converts a CSV file to Y, J, E network matrices.
+
+    :param filename: the name of the CSV file
+    :return: the Y, J, E network matrices
+    """
     with open(filename, 'r') as csv_file:
         reader = csv.reader(csv_file)
         J = []

@@ -175,7 +175,7 @@ class Matrix:
         """
         Reads a CSV file to a matrix.
 
-        :param filename: the file name of the CSV file
+        :param filename: the name of the CSV file
         :return: a matrix containing the values in the CSV file
         """
         with open(filename, 'r') as csv_file:

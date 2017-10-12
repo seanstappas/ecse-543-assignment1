@@ -100,15 +100,15 @@ class Matrix:
         return product
 
     @staticmethod
-    def empty(rows, cols):
+    def empty(num_rows, num_cols):
         """
         Returns an empty matrix (filled with zeroes) with the specified number of columns and rows.
 
-        :param rows: number of rows
-        :param cols: number of columns
+        :param num_rows: number of rows
+        :param num_cols: number of columns
         :return: the empty matrix
         """
-        return Matrix([[0 for col in range(cols)] for row in range(rows)])
+        return Matrix([[0 for _ in range(num_cols)] for _ in range(num_rows)])
 
     @staticmethod
     def identity(n):

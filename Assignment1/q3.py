@@ -215,17 +215,8 @@ def q3e():
     print('Potential at ({}, {}): {:.3f} V'.format(X_QUERY, Y_QUERY, potential))
 
     print('Non-Uniform (clustered near outer conductor)')
-    x_values = [0.00, 0.020, 0.032, 0.044, 0.055, 0.06, 0.074, 0.082, 0.089, 0.095, 0.1, 0.15]
-    y_values = [0.00, 0.020, 0.032, 0.04, 0.055, 0.065, 0.074, 0.082, 0.089, 0.095, 0.1, 0.15]
-    iter_relaxer = non_uniform_successive_over_relaxation(EPSILON, x_values, y_values)
-    print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
-    print('Num iterations: {}'.format(iter_relaxer.num_iterations))
-    potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
-    print('Potential at ({}, {}): {:.3f} V'.format(X_QUERY, Y_QUERY, potential))
-
-    print('Non-Uniform (clustered near outer and inner conductors)')
-    x_values = [0.00, 0.007, 0.015, 0.024, 0.034, 0.045, 0.06, 0.076, 0.085, 0.093, 0.1, 0.17]
-    y_values = [0.00, 0.007, 0.015, 0.024, 0.04, 0.045, 0.066, 0.076, 0.085, 0.093, 0.1, 0.17]
+    x_values = [0.00, 0.020, 0.032, 0.044, 0.055, 0.06, 0.074, 0.082, 0.089, 0.096, 0.1, 0.14]
+    y_values = [0.00, 0.020, 0.032, 0.04, 0.055, 0.065, 0.074, 0.082, 0.089, 0.096, 0.1, 0.14]
     iter_relaxer = non_uniform_successive_over_relaxation(EPSILON, x_values, y_values)
     print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
     print('Num iterations: {}'.format(iter_relaxer.num_iterations))
@@ -282,10 +273,10 @@ def save_rows_to_csv(filename, rows, header=None):
 
 
 def q3():
-    # o = q3b()
-    # h_values, potential_values, iterations_values = q3c(o)
-    # _, potential_values_jacobi, iterations_values_jacobi = q3d()
-    # plot_sor_jacobi(h_values, potential_values, potential_values_jacobi, iterations_values, iterations_values_jacobi)
+    o = q3b()
+    h_values, potential_values, iterations_values = q3c(o)
+    _, potential_values_jacobi, iterations_values_jacobi = q3d()
+    plot_sor_jacobi(h_values, potential_values, potential_values_jacobi, iterations_values, iterations_values_jacobi)
     q3e()
 
 

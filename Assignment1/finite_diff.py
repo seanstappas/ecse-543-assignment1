@@ -138,20 +138,19 @@ class RadialPotentialGuesser(PotentialGuesser):
 
 
 class PhiConstructor:
-    def __init__(self):
+    def __init__(self, mesh):
         outer_boundary = OuterConductorBoundary()
         inner_boundary = QuarterInnerConductorBoundary()
         self.boundaries = (inner_boundary, outer_boundary)
         self.guesser = RadialPotentialGuesser(0, 15)
-        self.boundary_size = 0.2
+        self.mesh = mesh
 
-    def construct_simple_phi(self, h):
-        num_mesh_points_along_axis = int(self.boundary_size / h) + 1
-        phi = Matrix.empty(num_mesh_points_along_axis, num_mesh_points_along_axis)
-        for i in range(num_mesh_points_along_axis):
-            y = i * h
-            for j in range(num_mesh_points_along_axis):
-                x = j * h
+    def construct_phi(self, ):
+        phi = Matrix.empty(self.mesh.num_rows, self.mesh.num_cols)
+        for i in range(self.mesh.num_rows):
+            y = self.mesh.get_y(i)
+            for j in range(self.mesh.num_cols):
+                x = self.mesh.get_x(j)
                 boundary_pt = False
                 for boundary in self.boundaries:
                     if boundary.contains_point(x, y):
@@ -161,21 +160,22 @@ class PhiConstructor:
                     phi[i][j] = self.guesser.guess(x, y)
         return phi
 
-    def construct_symmetric_phi(self, h):
-        max_index = int(0.1 / h) + 2  # Only need to store up to middle
-        phi = Matrix.empty(max_index, max_index)
-        for i in range(max_index):
-            y = i * h
-            for j in range(max_index):
-                x = j * h
-                boundary_pt = False
-                for boundary in self.boundaries:
-                    if boundary.contains_point(x, y):
-                        boundary_pt = True
-                        phi[i][j] = boundary.potential()
-                if not boundary_pt:
-                    phi[i][j] = self.guesser.guess(x, y)
-        return phi
+
+class SquareMeshConstructor:
+    def __init__(self, size):
+        self.size = size
+
+    def construct_simple_mesh(self, h):
+        num_rows = num_cols = int(self.size / h) + 1
+        return SimpleMesh(h, num_rows, num_cols)
+
+    def construct_symmetric_simple_mesh(self, h):
+        half_size = self.size / 2
+        num_rows = num_cols = int(half_size / h) + 2  # Only need to store up to middle
+        return SimpleMesh(h, num_rows, num_cols)
+
+    def construct_symmetric_non_uniform_mesh(self, x_values, y_values):
+        return NonUniformMesh(x_values, y_values)
 
 
 class Mesh:
@@ -205,8 +205,10 @@ class Mesh:
 
 
 class SimpleMesh(Mesh):
-    def __init__(self, h):
+    def __init__(self, h, num_rows, num_cols):
         self.h = h
+        self.num_rows = num_rows
+        self.num_cols = num_cols
 
     def get_i(self, y):
         return int(y / self.h)
@@ -225,6 +227,8 @@ class NonUniformMesh(Mesh):
     def __init__(self, x_values, y_values):
         self.x_values = x_values
         self.y_values = y_values
+        self.num_rows = len(y_values)
+        self.num_cols = len(x_values)
 
     def get_i(self, y):
         return self.y_values.index(y)
@@ -240,17 +244,17 @@ class NonUniformMesh(Mesh):
 
 
 class IterativeRelaxer:
-    def __init__(self, relaxer, epsilon, phi, h, mesh):
+    def __init__(self, relaxer, epsilon, phi, mesh):
         self.relaxer = relaxer
         self.epsilon = epsilon
         self.phi = phi
         self.boundary = QuarterInnerConductorBoundary()
-        self.h = h
         self.num_iterations = 0
         self.rows = len(phi)
         self.cols = len(phi[0])
-        self.mid_index = int(0.1 / h)
         self.mesh = mesh
+        self.mid_i = mesh.get_i(MESH_SIZE / 2)
+        self.mid_j = mesh.get_j(MESH_SIZE / 2)
 
     def relaxation(self):
         while not self.convergence():
@@ -262,11 +266,12 @@ class IterativeRelaxer:
                     if not self.boundary.contains_point(x, y):
                         relaxed_value = self.relaxer.relax(self.phi, i, j)
                         self.phi[i][j] = relaxed_value
-                        if i == self.mid_index - 1:
+                        if i == self.mid_i - 1:
                             self.phi[i + 2][j] = relaxed_value
-                        elif j == self.mid_index - 1:
+                        elif j == self.mid_j - 1:
                             self.phi[i][j + 2] = relaxed_value
             self.relaxer.reset()
+        return self
 
     def convergence(self):
         max_i, max_j = self.mesh.point_to_indices(0.1, 0.1)
@@ -284,29 +289,25 @@ class IterativeRelaxer:
         return self.phi[i][j]
 
 
+MESH_SIZE = 0.2
+
+
 def non_uniform_successive_over_relaxation(epsilon, x_values, y_values):
-    h = 0.1 / (len(x_values) - 2)  # As if h uniform, but actually x, y values clustered around (0.06, 0.04)
-    phi = PhiConstructor().construct_symmetric_phi(h)
-    mesh = NonUniformMesh(x_values, y_values)
+    mesh = SquareMeshConstructor(MESH_SIZE).construct_symmetric_non_uniform_mesh(x_values, y_values)
     relaxer = NonUniformRelaxer(mesh)
-    iter_relaxer = IterativeRelaxer(relaxer, epsilon, phi, h, mesh)
-    iter_relaxer.relaxation()
-    return iter_relaxer
+    phi = PhiConstructor(mesh).construct_phi()
+    return IterativeRelaxer(relaxer, epsilon, phi, mesh).relaxation()
 
 
 def successive_over_relaxation(omega, epsilon, h):
-    phi = PhiConstructor().construct_symmetric_phi(h)
+    mesh = SquareMeshConstructor(MESH_SIZE).construct_symmetric_simple_mesh(h)
     relaxer = SuccessiveOverRelaxer(omega)
-    mesh = SimpleMesh(h)
-    iter_relaxer = IterativeRelaxer(relaxer, epsilon, phi, h, mesh)
-    iter_relaxer.relaxation()
-    return iter_relaxer
+    phi = PhiConstructor(mesh).construct_phi()
+    return IterativeRelaxer(relaxer, epsilon, phi, mesh).relaxation()
 
 
 def jacobi_relaxation(epsilon, h):
-    phi = PhiConstructor().construct_symmetric_phi(h)
+    mesh = SquareMeshConstructor(MESH_SIZE).construct_symmetric_simple_mesh(h)
     relaxer = GaussSeidelRelaxer()
-    mesh = SimpleMesh(h)
-    iter_relaxer = IterativeRelaxer(relaxer, epsilon, phi, h, mesh)
-    iter_relaxer.relaxation()
-    return iter_relaxer
+    phi = PhiConstructor(mesh).construct_phi()
+    return IterativeRelaxer(relaxer, epsilon, phi, mesh).relaxation()

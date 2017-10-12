@@ -66,6 +66,9 @@ class Matrix:
         return len(self.data)
 
     def is_positive_definite(self):
+        """
+        :return: True if the matrix if positive-definite, False otherwise.
+        """
         A = copy.deepcopy(self.data)
         n = len(A)
         for j in range(n):
@@ -79,20 +82,35 @@ class Matrix:
         return True
 
     def transpose(self):
+        """
+        :return: the transpose of the current matrix
+        """
         rows = len(self)
         cols = len(self[0])
         return Matrix([[self.data[row][col] for row in range(rows)] for col in range(cols)])
 
     def mirror_horizontal(self):
+        """
+        :return: the horizontal mirror of the current matrix
+        """
         rows = len(self)
         cols = len(self[0])
         return Matrix([[self.data[rows - row - 1][col] for col in range(cols)] for row in range(rows)])
 
     def empty_copy(self):
+        """
+        :return: an empty matrix of the same size as the current matrix.
+        """
         return Matrix.empty(len(self), len(self[0]))
 
     @staticmethod
     def multiply(*matrices):
+        """
+        Computes the product of the given matrices.
+
+        :param matrices: the matrix objects
+        :return: the product of the given matrices
+        """
         n = len(matrices[0])
         product = Matrix.identity(n)
         for matrix in matrices:
@@ -112,15 +130,34 @@ class Matrix:
 
     @staticmethod
     def identity(n):
+        """
+        Returns the identity matrix of the given size.
+
+        :param n: the size of the identity matrix (number of rows or columns)
+        :return: the identity matrix of size n
+        """
         return Matrix.diagonal_single_value(1, n)
 
     @staticmethod
     def diagonal(values):
+        """
+        Returns a diagonal matrix with the given values along the main diagonal.
+
+        :param values: the values along the main diagonal
+        :return: a diagonal matrix with the given values along the main diagonal
+        """
         n = len(values)
         return Matrix([[values[row] if row == col else 0 for col in range(n)] for row in range(n)])
 
     @staticmethod
     def diagonal_single_value(value, n):
+        """
+        Returns a diagonal matrix of the given size with the given value along the diagonal.
+
+        :param value: the value of each element on the main diagonal
+        :param n: the size of the matrix
+        :return: a diagonal matrix of the given size with the given value along the diagonal.
+        """
         return Matrix([[value if row == col else 0 for col in range(n)] for row in range(n)])
 
     @staticmethod
@@ -135,6 +172,12 @@ class Matrix:
 
     @staticmethod
     def csv_to_matrix(filename):
+        """
+        Reads a CSV file to a matrix.
+
+        :param filename: the file name of the CSV file
+        :return: a matrix containing the values in the CSV file
+        """
         with open(filename, 'r') as csv_file:
             reader = csv.reader(csv_file)
             data = []

@@ -6,25 +6,45 @@ from abc import ABCMeta, abstractmethod
 
 from matrices import Matrix
 
+MESH_SIZE = 0.2
+
 
 class Relaxer:
+    """
+    Performs the relaxing stage of the finite difference method.
+    """
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def relax(self, phi, i, j):
+        """
+        Perform a relaxation iteration on a given (i, j) point of the given phi matrix.
+
+        :param phi: the phi matrix
+        :param i: the row index
+        :param j: the column index
+        """
         raise NotImplementedError
 
     def reset(self):
+        """
+        Optional method to reset the relaxer.
+        """
         pass
 
     def residual(self, phi, i, j):
+        """
+        Calculate the residual at the given (i, j) point of the given phi matrix.
+
+        :param phi: the phi matrix
+        :param i: the row index
+        :param j: the column index
+        :return:
+        """
         return abs(phi[i + 1][j] + phi[i - 1][j] + phi[i][j + 1] + phi[i][j - 1] - 4 * phi[i][j])
 
 
 class GaussSeidelRelaxer(Relaxer):
-    """Relaxer which can represent a Jacobi relaxer, if the 'old' phi is given, or a Gauss-Seidel relaxer, if phi is
-    modified in place."""
-
     def relax(self, phi, i, j):
         return (phi[i + 1][j] + phi[i - 1][j] + phi[i][j + 1] + phi[i][j - 1]) / 4
 
@@ -79,14 +99,26 @@ class SuccessiveOverRelaxer(Relaxer):
 
 
 class Boundary:
+    """
+    Constant-potential boundary in the finite difference mesh, representing a conductor.
+    """
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def potential(self):
+        """
+        Return the potential on the boundary.
+        """
         raise NotImplementedError
 
     @abstractmethod
     def contains_point(self, x, y):
+        """
+        Returns true if the boundary contains the given (x, y) point.
+
+        :param x: the x coordinate of the point
+        :param y: the y coordinate of the point
+        """
         raise NotImplementedError
 
 
@@ -107,6 +139,9 @@ class QuarterInnerConductorBoundary(Boundary):
 
 
 class PotentialGuesser:
+    """
+    Guesses the initial potential in the finite-difference mesh.
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self, min_potential, max_potential):
@@ -115,6 +150,12 @@ class PotentialGuesser:
 
     @abstractmethod
     def guess(self, x, y):
+        """
+        Guess the potential at the given (x, y) point, and return it.
+
+        :param x: the x coordinate of the point
+        :param y: the y coordinate of the point
+        """
         raise NotImplementedError
 
 
@@ -128,16 +169,20 @@ class LinearPotentialGuesser(PotentialGuesser):
         return 150 * x if x < 0.06 else 150 * y
 
 
-def radial(k, x, y, x_source, y_source):
-    return k / (math.sqrt((x_source - x) ** 2 + (y_source - y) ** 2))
-
-
 class RadialPotentialGuesser(PotentialGuesser):
     def guess(self, x, y):
+        def radial(k, x, y, x_source, y_source):
+            return k / (math.sqrt((x_source - x) ** 2 + (y_source - y) ** 2))
+
         return 0.0225 * (radial(20, x, y, 0.1, 0.1) - radial(1, x, y, 0, y) - radial(1, x, y, x, 0))
 
 
 class PhiConstructor:
+    """
+    Constructs the phi potential matrix with an outer conductor, inner conductor, mesh points and an inital potential
+    guess.
+    """
+
     def __init__(self, mesh):
         outer_boundary = OuterConductorBoundary()
         inner_boundary = QuarterInnerConductorBoundary()
@@ -145,7 +190,7 @@ class PhiConstructor:
         self.guesser = RadialPotentialGuesser(0, 15)
         self.mesh = mesh
 
-    def construct_phi(self, ):
+    def construct_phi(self):
         phi = Matrix.empty(self.mesh.num_rows, self.mesh.num_cols)
         for i in range(self.mesh.num_rows):
             y = self.mesh.get_y(i)
@@ -162,45 +207,105 @@ class PhiConstructor:
 
 
 class SquareMeshConstructor:
+    """
+    Constructs a square mesh.
+    """
+
     def __init__(self, size):
         self.size = size
 
-    def construct_simple_mesh(self, h):
+    def construct_uniform_mesh(self, h):
+        """
+        Constructs a uniform mesh with the given node spacing.
+
+        :param h: the node spacing
+        :return: the constructed mesh
+        """
         num_rows = num_cols = int(self.size / h) + 1
         return SimpleMesh(h, num_rows, num_cols)
 
-    def construct_symmetric_simple_mesh(self, h):
+    def construct_symmetric_uniform_mesh(self, h):
+        """
+        Construct a symmetric uniform mesh with the given node spacing.
+
+        :param h: the node spacing
+        :return: the constructed mesh
+        """
         half_size = self.size / 2
         num_rows = num_cols = int(half_size / h) + 2  # Only need to store up to middle
         return SimpleMesh(h, num_rows, num_cols)
 
     def construct_symmetric_non_uniform_mesh(self, x_values, y_values):
+        """
+        Construct a symmetric non-uniform mesh with the given adjacent x coordinates and y coordinates.
+
+        :param x_values: the values of successive x coordinates
+        :param y_values: the values of successive y coordinates
+        :return: the constructed mesh
+        """
         return NonUniformMesh(x_values, y_values)
 
 
 class Mesh:
+    """
+    Finite-difference mesh.
+    """
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def get_x(self, j):
+        """
+        Get the x value at the specified index.
+
+        :param j: the column index.
+        """
         raise NotImplementedError
 
     @abstractmethod
     def get_y(self, i):
+        """
+        Get the y value at the specified index.
+
+        :param i: the row index.
+        """
         raise NotImplementedError
 
     @abstractmethod
     def get_i(self, y):
+        """
+        Get the row index of the specified y coordinate.
+
+        :param y: the y coordinate
+        """
         raise NotImplementedError
 
     @abstractmethod
     def get_j(self, x):
+        """
+        Get the column index of the specified x coordinate.
+
+        :param x: the x coordinate
+        """
         raise NotImplementedError
 
     def point_to_indices(self, x, y):
+        """
+        Converts the given (x, y) point to (i, j) matrix indices.
+
+        :param x: the x coordinate
+        :param y: the y coordinate
+        :return: the (i, j) matrix indices
+        """
         return self.get_i(y), self.get_j(x)
 
     def indices_to_points(self, i, j):
+        """
+        Converts the given (i, j) matrix indices to an (x, y) point.
+
+        :param i: the row index
+        :param j: the column index
+        :return: the (x, y) point
+        """
         return self.get_x(j), self.get_y(i)
 
 
@@ -244,6 +349,10 @@ class NonUniformMesh(Mesh):
 
 
 class IterativeRelaxer:
+    """
+    Performs finite-difference iterative relaxation on a phi potential matrix associated with a mesh.
+    """
+
     def __init__(self, relaxer, epsilon, phi, mesh):
         self.relaxer = relaxer
         self.epsilon = epsilon
@@ -257,25 +366,40 @@ class IterativeRelaxer:
         self.mid_j = mesh.get_j(MESH_SIZE / 2)
 
     def relaxation(self):
+        """
+        Performs iterative relaxation until convergence is met.
+
+        :return: the current iterative relaxer object
+        """
         while not self.convergence():
             self.num_iterations += 1
-            for i in range(1, self.rows - 1):
-                y = self.mesh.get_y(i)
-                for j in range(1, self.cols - 1):
-                    x = self.mesh.get_x(j)
-                    if not self.boundary.contains_point(x, y):
-                        relaxed_value = self.relaxer.relax(self.phi, i, j)
-                        self.phi[i][j] = relaxed_value
-                        if i == self.mid_i - 1:
-                            self.phi[i + 2][j] = relaxed_value
-                        elif j == self.mid_j - 1:
-                            self.phi[i][j + 2] = relaxed_value
+            self.relaxation_iteration()
             self.relaxer.reset()
         return self
 
+    def relaxation_iteration(self):
+        """
+        Performs one iteration of relaxation.
+        """
+        for i in range(1, self.rows - 1):
+            y = self.mesh.get_y(i)
+            for j in range(1, self.cols - 1):
+                x = self.mesh.get_x(j)
+                if not self.boundary.contains_point(x, y):
+                    relaxed_value = self.relaxer.relax(self.phi, i, j)
+                    self.phi[i][j] = relaxed_value
+                    if i == self.mid_i - 1:
+                        self.phi[i + 2][j] = relaxed_value
+                    elif j == self.mid_j - 1:
+                        self.phi[i][j + 2] = relaxed_value
+
     def convergence(self):
-        max_i, max_j = self.mesh.point_to_indices(0.1, 0.1)
-        # Only need to compute for 1/4 of grid
+        """
+        Checks if the phi matrix has reached convergence.
+
+        :return: True if the phi matrix has reached convergence, False otherwise
+        """
+        max_i, max_j = self.mesh.point_to_indices(0.1, 0.1)  # Only need to compute for 1/4 of grid
         for i in range(1, max_i + 1):
             y = self.mesh.get_y(i)
             for j in range(1, max_j + 1):
@@ -285,14 +409,26 @@ class IterativeRelaxer:
         return True
 
     def get_potential(self, x, y):
+        """
+        Get the potential at the given (x, y) point.
+
+        :param x: the x coordinate
+        :param y: the y coordinate
+        :return: the potential at the given (x, y) point
+        """
         i, j = self.mesh.point_to_indices(x, y)
         return self.phi[i][j]
 
 
-MESH_SIZE = 0.2
+def non_uniform_jacobi(epsilon, x_values, y_values):
+    """
+    Perform Jacobi relaxation on a non-uniform finite-difference mesh.
 
-
-def non_uniform_successive_over_relaxation(epsilon, x_values, y_values):
+    :param epsilon: the maximum error to achieve convergence
+    :param x_values: the values of successive x coordinates
+    :param y_values: the values of successive y coordinates
+    :return: the relaxer object
+    """
     mesh = SquareMeshConstructor(MESH_SIZE).construct_symmetric_non_uniform_mesh(x_values, y_values)
     relaxer = NonUniformRelaxer(mesh)
     phi = PhiConstructor(mesh).construct_phi()
@@ -300,14 +436,29 @@ def non_uniform_successive_over_relaxation(epsilon, x_values, y_values):
 
 
 def successive_over_relaxation(omega, epsilon, h):
-    mesh = SquareMeshConstructor(MESH_SIZE).construct_symmetric_simple_mesh(h)
+    """
+    Perform SOR on a uniform symmetric finite-difference mesh.
+
+    :param omega: the omega value for SOR
+    :param epsilon: the maximum error to achieve convergence
+    :param h: the node spacing
+    :return: the relaxer object
+    """
+    mesh = SquareMeshConstructor(MESH_SIZE).construct_symmetric_uniform_mesh(h)
     relaxer = SuccessiveOverRelaxer(omega)
     phi = PhiConstructor(mesh).construct_phi()
     return IterativeRelaxer(relaxer, epsilon, phi, mesh).relaxation()
 
 
 def jacobi_relaxation(epsilon, h):
-    mesh = SquareMeshConstructor(MESH_SIZE).construct_symmetric_simple_mesh(h)
+    """
+    Perform Jacobi relaxation on a uniform symmetric finite-difference mesh.
+
+    :param epsilon: the maximum error to achieve convergence
+    :param h: the node spacing
+    :return: the relaxer object
+    """
+    mesh = SquareMeshConstructor(MESH_SIZE).construct_symmetric_uniform_mesh(h)
     relaxer = GaussSeidelRelaxer()
     phi = PhiConstructor(mesh).construct_phi()
     return IterativeRelaxer(relaxer, epsilon, phi, mesh).relaxation()

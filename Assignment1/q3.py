@@ -11,7 +11,7 @@ import numpy as np
 import sympy as sp
 
 from finite_diff import PhiConstructor, successive_over_relaxation, jacobi_relaxation, \
-    non_uniform_successive_over_relaxation
+    non_uniform_jacobi
 
 EPSILON = 0.00001
 X_QUERY = 0.06
@@ -189,7 +189,7 @@ def q3e():
     print('Uniform Mesh (same as Jacobi)')
     x_values = [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11]
     y_values = [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11]
-    iter_relaxer = non_uniform_successive_over_relaxation(EPSILON, x_values, y_values)
+    iter_relaxer = non_uniform_jacobi(EPSILON, x_values, y_values)
     print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
     print('Num iterations: {}'.format(iter_relaxer.num_iterations))
     uniform_potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
@@ -199,7 +199,7 @@ def q3e():
     print('Non-Uniform (clustered around (0.06, 0.04))')
     x_values = [0.00, 0.01, 0.02, 0.03, 0.05, 0.055, 0.06, 0.065, 0.07, 0.09, 0.1, 0.11]
     y_values = [0.00, 0.01, 0.03, 0.035, 0.04, 0.045, 0.05, 0.07, 0.08, 0.09, 0.1, 0.11]
-    iter_relaxer = non_uniform_successive_over_relaxation(EPSILON, x_values, y_values)
+    iter_relaxer = non_uniform_jacobi(EPSILON, x_values, y_values)
     print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
     print('Num iterations: {}'.format(iter_relaxer.num_iterations))
     potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
@@ -208,7 +208,7 @@ def q3e():
     print('Non-Uniform (more clustered around (0.06, 0.04))')
     x_values = [0.00, 0.01, 0.02, 0.03, 0.055, 0.059, 0.06, 0.061, 0.065, 0.09, 0.1, 0.11]
     y_values = [0.00, 0.01, 0.035, 0.039, 0.04, 0.041, 0.045, 0.07, 0.08, 0.09, 0.1, 0.11]
-    iter_relaxer = non_uniform_successive_over_relaxation(EPSILON, x_values, y_values)
+    iter_relaxer = non_uniform_jacobi(EPSILON, x_values, y_values)
     print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
     print('Num iterations: {}'.format(iter_relaxer.num_iterations))
     potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)
@@ -217,7 +217,7 @@ def q3e():
     print('Non-Uniform (clustered near outer conductor)')
     x_values = [0.00, 0.020, 0.032, 0.044, 0.055, 0.06, 0.074, 0.082, 0.089, 0.096, 0.1, 0.14]
     y_values = [0.00, 0.020, 0.032, 0.04, 0.055, 0.065, 0.074, 0.082, 0.089, 0.096, 0.1, 0.14]
-    iter_relaxer = non_uniform_successive_over_relaxation(EPSILON, x_values, y_values)
+    iter_relaxer = non_uniform_jacobi(EPSILON, x_values, y_values)
     print('Quarter grid: {}'.format(iter_relaxer.phi.mirror_horizontal()))
     print('Num iterations: {}'.format(iter_relaxer.num_iterations))
     potential = iter_relaxer.get_potential(X_QUERY, Y_QUERY)

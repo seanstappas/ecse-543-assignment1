@@ -6,6 +6,14 @@ from matrices import Matrix
 
 
 def choleski_solve(A, b, half_bandwidth=None):
+    """
+    Solves an Ax = b matrix equation by Choleski decomposition.
+
+    :param A: the A matrix
+    :param b: the b matrix
+    :param half_bandwidth: the half-bandwidth of the A matrix
+    :return: the solved x vector
+    """
     n = len(A[0])
     if half_bandwidth is None:
         elimination(A, b)
@@ -17,6 +25,12 @@ def choleski_solve(A, b, half_bandwidth=None):
 
 
 def elimination(A, b):
+    """
+    Performs the elimination step of Choleski decomposition.
+
+    :param A: the A matrix
+    :param b: the b matrix
+    """
     n = len(A)
     for j in range(n):
         if A[j][j] <= 0:
@@ -31,6 +45,13 @@ def elimination(A, b):
 
 
 def elimination_banded(A, b, half_bandwidth):  # TODO: Keep limited band in memory, improve time complexity
+    """
+    Performs the banded elimination step of Choleski decomposition.
+
+    :param A: the A matrix
+    :param b: the b matrix
+    :param half_bandwidth: the half_bandwidth to be used for the banded elimination
+    """
     n = len(A)
     for j in range(n):
         if A[j][j] <= 0:
@@ -45,6 +66,13 @@ def elimination_banded(A, b, half_bandwidth):  # TODO: Keep limited band in memo
 
 
 def back_substitution(L, x, y):
+    """
+    Performs the back-substitution step of Choleski decomposition.
+
+    :param L: the L matrix
+    :param x: the x matrix
+    :param y: the y matrix
+    """
     n = len(L)
     for i in range(n - 1, -1, -1):
         prev_sum = 0

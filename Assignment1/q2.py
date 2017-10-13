@@ -2,12 +2,10 @@ import csv
 import time
 
 import matplotlib.pyplot as plt
-import numpy.polynomial.polynomial as poly
-
 import numpy as np
+import numpy.polynomial.polynomial as poly
 import sympy as sp
 from matplotlib.ticker import MaxNLocator
-from scipy.interpolate import interp1d
 
 from linear_networks import find_mesh_resistance
 

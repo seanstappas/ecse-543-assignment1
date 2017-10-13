@@ -1,16 +1,14 @@
 from __future__ import division
 
 import csv
-
-import matplotlib.pyplot as plt
 import time
 
-import numpy.polynomial.polynomial as poly
-
+import matplotlib.pyplot as plt
 import numpy as np
+import numpy.polynomial.polynomial as poly
 import sympy as sp
 
-from finite_diff import PhiConstructor, successive_over_relaxation, jacobi_relaxation, \
+from finite_diff import successive_over_relaxation, jacobi_relaxation, \
     non_uniform_jacobi
 
 EPSILON = 0.00001

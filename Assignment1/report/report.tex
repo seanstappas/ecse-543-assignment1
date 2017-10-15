@@ -73,7 +73,7 @@
 	
 	As can be seen in \autoref{lst:linear_networks}, the \mintinline{python}{csv_to_network_branch_matrices} method of the \mintinline{python}{linear_networks.py} script reads from a CSV file where row $k$ contains $J_k$, $R_k$ and $E_k$. It then converts the resistances to a diagonal admittance matrix $Y$ and produces the $J$ and $E$ column vectors. The incidence matrix $A$ is also read directly from file, as seen in \autoref{lst:q1}.
 	
-	First, the program was tested on the circuits provided on MyCourses. These circuits are labeled 1 to 5 and have corresponding incidence matrix and network branch CSV files, located in the \mintinline{python}{network_data} directory. The program obtains the expected voltages, as seen in the output in \autoref{lst:q1_log}. Then, some additional simple test circuits were created.
+	First, the program was tested on the circuits provided on MyCourses. These circuits are labeled 1 to 5 and have corresponding incidence matrix and network branch CSV files, located in the \mintinline{python}{network_data} directory. The program obtains the expected voltages, as seen in the output in \autoref{lst:q1_log}. Then, some additional simple test circuits were created. Circuit 6 can be seen in \autoref{fig:q1_circuit_6} and the SPICE analysis output in \autoref{table:q1_circuit_6}. These voltages match the ones calculated by the program, as seen in \autoref{lst:q1_log}.
 	
 	\begin{figure}[!htb]
 		\centering
@@ -82,8 +82,15 @@
 		{Test circuit 6 with nodes labeled 1 to 4.}
 		\label{fig:q1_circuit_6}
 	\end{figure}
+
+	\begin{table}[!htb]
+		\centering
+		\caption{Output of SPICE operating point analysis of circuit 6.}
+		\csvautobooktabular{csv/q1_circuit_6.csv}
+		\label{table:q1_circuit_6}
+	\end{table}
 	
-	% TODO: Put pictures of test circuits! (create your own as well as the provided ones…)
+	% TODO: Add more test circuits?
 	
 	\section{Finite Difference Mesh}
 	

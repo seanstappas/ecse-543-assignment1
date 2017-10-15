@@ -41,26 +41,31 @@ def q1b():
 
 def q1c():
     print('=== Question 1(c) ===')
+    n = 2
     for x, A in zip(xs, positive_definite_matrices):
         b = A * x
         # print('A: {}'.format(A))
         # print('b: {}'.format(b))
 
         x_choleski = choleski_solve(A, b)
+        print('Matrix with n={}:'.format(n))
         print('Expected x: {}'.format(x))
         print('Actual x: {}'.format(x_choleski))
+        n += 1
 
 
 def q1d():
     print('=== Question 1(d) ===')
-    for i in range(1, 6):
+    for i in range(1, 7):
         A = Matrix.csv_to_matrix('{}/incidence_matrix_{}.csv'.format(NETWORK_DIRECTORY, i))
         Y, J, E = csv_to_network_branch_matrices('{}/network_branches_{}.csv'.format(NETWORK_DIRECTORY, i))
         # print('Y: {}'.format(Y))
         # print('J: {}'.format(J))
         # print('E: {}'.format(E))
         x = solve_linear_network(A, Y, J, E)
-        print('Solved for x in network {}: {}'.format(i, x))  # TODO: Create my own test circuits here
+        print('Solved for x in network {}:'.format(i))  # TODO: Create my own test circuits here
+        for j in range(len(x)):
+            print('V{} = {:.3f} V'.format(j + 1, x[j][0]))
 
 
 def q1():

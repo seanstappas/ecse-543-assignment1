@@ -31,16 +31,16 @@ def csv_to_network_branch_matrices(filename):
     with open(filename, 'r') as csv_file:
         reader = csv.reader(csv_file)
         J = []
-        R = []
+        Y = []
         E = []
         for row in reader:
             J_k = float(row[0])
             R_k = float(row[1])
             E_k = float(row[2])
             J.append(J_k)
-            R.append(1 / R_k)
+            Y.append(1 / R_k)
             E.append(E_k)
-        Y = Matrix.diagonal(R)
+        Y = Matrix.diagonal(Y)
         J = Matrix.column_vector(J)
         E = Matrix.column_vector(E)
         return Y, J, E

@@ -3,12 +3,14 @@ n=2 matrix is positive-definite: True
 n=3 matrix is positive-definite: True
 n=4 matrix is positive-definite: True
 === Question 1(c) ===
+Matrix with n=2:
 Expected x:
   8.00
   3.00
 Actual x:
   8.00
   3.00
+Matrix with n=3:
 Expected x:
   9.00
   4.00
@@ -17,6 +19,7 @@ Actual x:
   9.00
   4.00
   3.00
+Matrix with n=4:
 Expected x:
   5.00
   4.00
@@ -29,15 +32,21 @@ Actual x:
   9.00
 === Question 1(d) ===
 Solved for x in network 1:
-  5.00
+V1 = 5.000 V
 Solved for x in network 2:
- 50.00
+V1 = 50.000 V
 Solved for x in network 3:
- 55.00
+V1 = 55.000 V
 Solved for x in network 4:
- 20.00
- 35.00
+V1 = 20.000 V
+V2 = 35.000 V
 Solved for x in network 5:
-  5.00
-  3.75
-  3.75
+V1 = 5.000 V
+V2 = 3.750 V
+V3 = 3.750 V
+Solved for x in network 6:
+V1 = 4.443 V
+V2 = 5.498 V
+V3 = 3.036 V
+V4 = 3.200 V
+V5 = 1.301 V

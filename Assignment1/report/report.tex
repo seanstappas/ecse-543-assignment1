@@ -44,7 +44,7 @@
 	\maketitle
 	\twocolumn
 	
-	\section{Introduction}
+	\section*{Introduction}
 	
 	The programs for this assignment were created in Python 2.7. The source code is provided as listings in \autoref{appendix:listings}. To perform the required tasks in this assignment, a custom matrix package was created, with useful methods such as add, multiply, transpose, etc. This package can be seen in \autoref{lst:matrices}. In addition, logs of the output of the programs are provided in \autoref{appendix:logs}.
 	
@@ -71,7 +71,17 @@
 	\subsection{Linear Networks}
 	% Write a program that reads from a file a list of network branches (Jk, Rk, Ek) and a reduced incidence matrix, and finds the voltages at the nodes of the network. Use the code from part (a) to solve the matrix problem. Explain how the data is organized and read from the file. Test the program with a few small networks that you can check by hand. Compare the results for your test circuits with the analytical results you obtained by hand. Cleary specify each of the test circuits used with a labeled schematic diagram.
 	
-	First, the program was tested on the circuits provided on MyCourses.
+	As can be seen in \autoref{lst:linear_networks}, the \mintinline{python}{csv_to_network_branch_matrices} method of the \mintinline{python}{linear_networks.py} script reads from a CSV file where row $k$ contains $J_k$, $R_k$ and $E_k$. It then converts the resistances to a diagonal admittance matrix $Y$ and produces the $J$ and $E$ column vectors. The incidence matrix $A$ is also read directly from file, as seen in \autoref{lst:q1}.
+	
+	First, the program was tested on the circuits provided on MyCourses. These circuits are labeled 1 to 5 and have corresponding incidence matrix and network branch CSV files, located in the \mintinline{python}{network_data} directory. The program obtains the expected voltages, as seen in the output in \autoref{lst:q1_log}. Then, some additional simple test circuits were created.
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.75\columnwidth]{plots/q1_circuit_6.pdf}
+		\caption
+		{Test circuit 6 with nodes labeled 1 to 4.}
+		\label{fig:q1_circuit_6}
+	\end{figure}
 	
 	% TODO: Put pictures of test circuits! (create your own as well as the provided ones…)
 	
@@ -91,7 +101,23 @@
 		\label{table:q2a}
 	\end{table}
 
-	The resistance values returned by the program for small meshes were validated using simple SPICE circuits. % TODO: Show SPICE figure...
+	The resistance values returned by the program for small meshes were validated using simple SPICE circuits. The voltage found at the $V_{test}$ node for the 2x4 mesh is \SI{1.875}{\volt} and the equivalent resistance is therefore \SI{1875}{\ohm}. Similarly, for the 3x6 mesh, $V_{test} = \SI{2.37955}{\volt}$ and the equivalent resistance is \SI{2379.55}{\ohm}. These match the results found by the program, as seen in \autoref{table:q2a}.
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\columnwidth]{plots/q2a_mesh_2.pdf}
+		\caption
+		{SPICE circuit used to test the 2x4 mesh.}
+		\label{fig:q2a_mesh_2}
+	\end{figure}
+
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\columnwidth]{plots/q2a_mesh_3.pdf}
+		\caption
+		{SPICE circuit used to test the 3x6 mesh.}
+		\label{fig:q2a_mesh_3}
+	\end{figure}
 	
 	\subsection{Time Complexity}
 	% In theory, how does the computer time taken to solve this problem increase with N, for large N? Are the timings you observe for your practical implementation consistent with this? Explain your observations.

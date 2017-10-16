@@ -58,7 +58,8 @@ def elimination_banded(A, b, half_bandwidth):  # TODO: Keep limited band in memo
             raise ValueError('Matrix A is not positive definite.')
         A[j][j] = math.sqrt(A[j][j])
         b[j][0] = b[j][0] / A[j][j]
-        for i in range(j + 1, min(j + half_bandwidth, n)):
+        max_row = min(j + half_bandwidth, n)
+        for i in range(j + 1, max_row):
             A[i][j] = A[i][j] / A[j][j]
             b[i][0] = b[i][0] - A[i][j] * b[j][0]
             for k in range(j + 1, i + 1):

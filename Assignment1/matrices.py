@@ -11,47 +11,42 @@ class Matrix:
 
     def __init__(self, data):
         self.data = data
+        self.rows = len(data)
+        self.cols = len(data[0])
 
     def __str__(self):
         string = ''
         for row in self.data:
             string += '\n'
             for val in row:
-                string += '{:6.2f} '.format(val)
+                string += '{:10.5f} '.format(val)
         return string
 
     def __add__(self, other):
         if len(self) != len(other) or len(self[0]) != len(other[0]):
             raise ValueError('Incompatible matrix sizes for addition. Matrix A is {}x{}, but matrix B is {}x{}.'
                              .format(len(self), len(self[0]), len(other), len(other[0])))
-        rows = len(self)
-        cols = len(self[0])
 
-        return Matrix([[self[row][col] + other[row][col] for col in range(cols)] for row in range(rows)])
+        return Matrix([[self[row][col] + other[row][col] for col in range(self.cols)] for row in range(self.rows)])
 
     def __sub__(self, other):
         if len(self) != len(other) or len(self[0]) != len(other[0]):
             raise ValueError('Incompatible matrix sizes for subtraction. Matrix A is {}x{}, but matrix B is {}x{}.'
                              .format(len(self), len(self[0]), len(other), len(other[0])))
-        rows = len(self)
-        cols = len(self[0])
 
-        return Matrix([[self[row][col] - other[row][col] for col in range(cols)] for row in range(rows)])
+        return Matrix([[self[row][col] - other[row][col] for col in range(self.cols)] for row in range(self.rows)])
 
     def __mul__(self, other):
-        m = len(self[0])
-        n = len(self)
-        p = len(other[0])
-        if m != len(other):
+        if self.cols != other.rows:
             raise ValueError('Incompatible matrix sizes for multiplication. Matrix A is {}x{}, but matrix B is {}x{}.'
-                             .format(n, m, len(other), p))
+                             .format(self.rows, self.cols, other.rows, other.cols))
 
         # Inspired from https://en.wikipedia.org/wiki/Matrix_multiplication
-        product = Matrix.empty(n, p)
-        for i in range(n):
-            for j in range(p):
+        product = Matrix.empty(self.rows, other.cols)
+        for i in range(self.rows):
+            for j in range(other.cols):
                 row_sum = 0
-                for k in range(m):
+                for k in range(self.cols):
                     row_sum += self[i][k] * other[k][j]
                 product[i][j] = row_sum
         return product
@@ -70,12 +65,11 @@ class Matrix:
         :return: True if the matrix if positive-definite, False otherwise.
         """
         A = copy.deepcopy(self.data)
-        n = len(A)
-        for j in range(n):
+        for j in range(self.rows):
             if A[j][j] <= 0:
                 return False
             A[j][j] = math.sqrt(A[j][j])
-            for i in range(j + 1, n):
+            for i in range(j + 1, self.rows):
                 A[i][j] = A[i][j] / A[j][j]
                 for k in range(j + 1, i + 1):
                     A[i][k] = A[i][k] - A[i][j] * A[k][j]
@@ -85,23 +79,19 @@ class Matrix:
         """
         :return: the transpose of the current matrix
         """
-        rows = len(self)
-        cols = len(self[0])
-        return Matrix([[self.data[row][col] for row in range(rows)] for col in range(cols)])
+        return Matrix([[self.data[row][col] for row in range(self.rows)] for col in range(self.cols)])
 
     def mirror_horizontal(self):
         """
         :return: the horizontal mirror of the current matrix
         """
-        rows = len(self)
-        cols = len(self[0])
-        return Matrix([[self.data[rows - row - 1][col] for col in range(cols)] for row in range(rows)])
+        return Matrix([[self.data[self.rows - row - 1][col] for col in range(self.cols)] for row in range(self.rows)])
 
     def empty_copy(self):
         """
         :return: an empty matrix of the same size as the current matrix.
         """
-        return Matrix.empty(len(self), len(self[0]))
+        return Matrix.empty(self.rows, self.cols)
 
     @staticmethod
     def multiply(*matrices):
@@ -111,7 +101,7 @@ class Matrix:
         :param matrices: the matrix objects
         :return: the product of the given matrices
         """
-        n = len(matrices[0])
+        n = matrices[0].rows
         product = Matrix.identity(n)
         for matrix in matrices:
             product = product * matrix

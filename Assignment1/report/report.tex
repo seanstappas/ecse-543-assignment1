@@ -61,7 +61,7 @@
 	\subsection{Constructing Test Matrices}
 	% Construct some small matrices (n = 2, 3, 4, or 5) to test the program. Remember that the matrices must be real, symmetric and positive-definite. Explain how you chose the matrices.
 	
-	The matrices were constructed with the knowledge that, if $A$ is positive-definite, then $A = LL^T$ where L is a lower triangular non-singular matrix. The task of choosing valid $A$ matrices then boils down to finding non-singular lower triangular $L$ matrices. To ensure that $L$ is non-singular, one must simply choose nonzero values for the main diagonal.
+	The matrices were constructed with the knowledge that, if $A$ is positive-definite, then $A = LL^T$ where L is a lower triangular non-singular matrix. The task of choosing valid $A$ matrices then boils down to finding non-singular lower triangular $L$ matrices. To ensure that $L$ is non-singular, one must simply choose nonzero values for the main diagonal. The Choleski decomposition algorithm then validates that the matrix is positive definite, throwing an error if it is not.
 	
 	\subsection{Test Runs}
 	% Test the program you wrote in (a) with each small matrix you built in (b) in the following way: invent an x, multiply it by A to get b, then give A and b to your program and check that it returns x correctly.
@@ -75,22 +75,97 @@
 	
 	First, the program was tested on the circuits provided on MyCourses. These circuits are labeled 1 to 5 and have corresponding incidence matrix and network branch CSV files, located in the \mintinline{python}{network_data} directory. The program obtains the expected voltages, as seen in the output in \autoref{lst:q1_log}. Then, some additional simple test circuits were created. Circuit 6 can be seen in \autoref{fig:q1_circuit_6} and the SPICE analysis output in \autoref{table:q1_circuit_6}. These voltages match the ones calculated by the program, as seen in \autoref{lst:q1_log}.
 	
+	% TODO: Add listings of program output here?
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.5\columnwidth]{plots/q1_circuit_1.pdf}
+		\caption
+		{Test circuit 1 with labeled nodes.}
+		\label{fig:q1_circuit_1}
+	\end{figure}
+
+	\begin{table}[!htb]
+		\centering
+		\caption{Voltage at labeled nodes of circuit 1.}
+		\csvautobooktabular{csv/q1_circuit_1.csv}
+		\label{table:q1_circuit_1}
+	\end{table}
+
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.5\columnwidth]{plots/q1_circuit_2.pdf}
+		\caption
+		{Test circuit 2 with labeled nodes.}
+		\label{fig:q1_circuit_2}
+	\end{figure}
+	
+	\begin{table}[!htb]
+		\centering
+		\caption{Voltage at labeled nodes of circuit 2.}
+		\csvautobooktabular{csv/q1_circuit_2.csv}
+		\label{table:q1_circuit_2}
+	\end{table}
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.5\columnwidth]{plots/q1_circuit_3.pdf}
+		\caption
+		{Test circuit 3 with labeled nodes.}
+		\label{fig:q1_circuit_3}
+	\end{figure}
+	
+	\begin{table}[!htb]
+		\centering
+		\caption{Voltage at labeled nodes of circuit 3.}
+		\csvautobooktabular{csv/q1_circuit_3.csv}
+		\label{table:q1_circuit_3}
+	\end{table}
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.75\columnwidth]{plots/q1_circuit_4.pdf}
+		\caption
+		{Test circuit 4 with labeled nodes.}
+		\label{fig:q1_circuit_4}
+	\end{figure}
+	
+	\begin{table}[!htb]
+		\centering
+		\caption{Voltage at labeled nodes of circuit 4.}
+		\csvautobooktabular{csv/q1_circuit_4.csv}
+		\label{table:q1_circuit_4}
+	\end{table}
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.75\columnwidth]{plots/q1_circuit_5.pdf}
+		\caption
+		{Test circuit 5 with labeled nodes.}
+		\label{fig:q1_circuit_5}
+	\end{figure}
+	
+	\begin{table}[!htb]
+		\centering
+		\caption{Voltage at labeled nodes of circuit 5.}
+		\csvautobooktabular{csv/q1_circuit_5.csv}
+		\label{table:q1_circuit_5}
+	\end{table}
+	
 	\begin{figure}[!htb]
 		\centering
 		\includegraphics[width=0.75\columnwidth]{plots/q1_circuit_6.pdf}
 		\caption
-		{Test circuit 6 with nodes labeled 1 to 4.}
+		{Test circuit 6 with labeled nodes.}
 		\label{fig:q1_circuit_6}
 	\end{figure}
 
 	\begin{table}[!htb]
 		\centering
-		\caption{Output of SPICE operating point analysis of circuit 6.}
+		\caption{Voltage at labeled nodes of circuit 6.}
 		\csvautobooktabular{csv/q1_circuit_6.csv}
 		\label{table:q1_circuit_6}
 	\end{table}
-	
-	% TODO: Add more test circuits?
 	
 	\section{Finite Difference Mesh}
 	
@@ -348,6 +423,12 @@
 		\captionof{listing}{Custom matrix package (\texttt{matrices.py}).}
 		\inputminted{python}{../matrices.py}
 		\label{lst:matrices}
+	\end{center}
+
+	\begin{center}
+		\captionof{listing}{CSV manipulation utilities (\texttt{csv\_saver.py}).}
+		\inputminted{python}{../csv_saver.py}
+		\label{lst:csv_saver}
 	\end{center}
 
 	\begin{center}

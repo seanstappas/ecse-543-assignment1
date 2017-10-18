@@ -8,6 +8,7 @@ import numpy as np
 import numpy.polynomial.polynomial as poly
 import sympy as sp
 
+from csv_saver import save_rows_to_csv
 from finite_diff import successive_over_relaxation, jacobi_relaxation, \
     non_uniform_jacobi
 
@@ -288,15 +289,6 @@ def plot_sor_jacobi(h_values, potential_values, potential_values_jacobi, iterati
     plt.grid(True)
     plt.legend()
     f.savefig('report/plots/q3d_iterations_comparison.pdf', bbox_inches='tight')
-
-
-def save_rows_to_csv(filename, rows, header=None):
-    with open(filename, "wb") as f:
-        writer = csv.writer(f)
-        if header is not None:
-            writer.writerow(header)
-        for row in rows:
-            writer.writerow(row)
 
 
 if __name__ == '__main__':

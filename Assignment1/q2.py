@@ -7,6 +7,7 @@ import numpy.polynomial.polynomial as poly
 import sympy as sp
 from matplotlib.ticker import MaxNLocator
 
+from csv_saver import save_rows_to_csv
 from linear_networks import find_mesh_resistance
 
 
@@ -130,15 +131,6 @@ def plot_runtimes(points1, points2):
     plt.grid(True)
     plt.legend()
     f.savefig('report/plots/q2bc.pdf', bbox_inches='tight')
-
-
-def save_rows_to_csv(filename, rows, header=None):
-    with open(filename, "wb") as f:
-        writer = csv.writer(f)
-        if header is not None:
-            writer.writerow(header)
-        for row in rows:
-            writer.writerow(row)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 from __future__ import division
 
+from csv_saver import save_rows_to_csv
 from linear_networks import solve_linear_network, csv_to_network_branch_matrices
 from choleski import choleski_solve
 from matrices import Matrix
@@ -86,8 +87,14 @@ def q1d():
         # print('E: {}'.format(E))
         x = solve_linear_network(A, Y, J, E)
         print('Solved for x in network {}:'.format(i))  # TODO: Create my own test circuits here
+        node_numbers = []
+        voltage_values = []
         for j in range(len(x)):
             print('V{} = {:.3f} V'.format(j + 1, x[j][0]))
+            node_numbers.append(j + 1)
+            voltage_values.append('{:.3f}'.format(x[j][0]))
+        save_rows_to_csv('report/csv/q1_circuit_{}.csv'.format(i), zip(node_numbers, voltage_values),
+                         header=('Node', 'Voltage (V)'))
 
 
 if __name__ == '__main__':

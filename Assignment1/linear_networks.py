@@ -129,10 +129,10 @@ def find_mesh_resistance(N, branch_resistance, half_bandwidth=None):
     Find the equivalent resistance of an Nx2N resistive mesh with the given branch resistance and optional
     half-bandwidth
 
-    :param N:
-    :param branch_resistance:
-    :param half_bandwidth:
-    :return:
+    :param N: the size of the mesh (Nx2N)
+    :param branch_resistance: the resistance of each branch of the mesh
+    :param half_bandwidth: the half-bandwidth to be used for banded Choleski decomposition (or None to use non-banded)
+    :return: the equivalent resistance of the mesh
     """
     test_current = 0.01
     A, Y, J, E = create_network_matrices_mesh(N, 2 * N, branch_resistance, test_current)

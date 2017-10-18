@@ -44,7 +44,7 @@ def elimination(A, b):
                 A[i][k] = A[i][k] - A[i][j] * A[k][j]
 
 
-def elimination_banded(A, b, half_bandwidth):  # TODO: Keep limited band in memory, improve time complexity
+def elimination_banded(A, b, half_bandwidth):
     """
     Performs the banded elimination step of Choleski decomposition.
 

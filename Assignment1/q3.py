@@ -17,8 +17,21 @@ Y_QUERY = 0.04
 NUM_H_ITERATIONS = 6
 
 
+def q3():
+    o = q3b()
+    h_values, potential_values, iterations_values = q3c(o)
+    _, potential_values_jacobi, iterations_values_jacobi = q3d()
+    plot_sor_jacobi(h_values, potential_values, potential_values_jacobi, iterations_values, iterations_values_jacobi)
+    q3e()
+
+
 def q3b():
-    print('=== Question 3(b) ===')
+    """
+    Question 3(b): With h = 0.02, explore the effect of varying omega.
+
+    :return: the best omega value found for SOR
+    """
+    print('\n=== Question 3(b) ===')
     h = 0.02
     min_num_iterations = float('inf')
     best_omega = float('inf')
@@ -62,7 +75,14 @@ def q3b():
 
 
 def q3c(omega):
-    print('=== Question 3(c): SOR ===')
+    """
+    Question 3(c): With an appropriate value of w, chosen from the above experiment, explore the effect of decreasing
+    h on the potential.
+
+    :param omega: the omega value to be used by SOR
+    :return: the h values, potential values and number of iterations
+    """
+    print('\n=== Question 3(c): SOR ===')
     h = 0.04
     h_values = []
     potential_values = []
@@ -120,7 +140,12 @@ def q3c(omega):
 
 
 def q3d():
-    print('=== Question 3(d): Jacobi ===')
+    """
+    Question 3(d): Use the Jacobi method to solve this problem for the same values of h used in part (c).
+
+    :return: the h values, potential values and number of iterations
+    """
+    print('\n=== Question 3(d): Jacobi ===')
     h = 0.04
     h_values = []
     potential_values = []
@@ -175,7 +200,11 @@ def q3d():
 
 
 def q3e():
-    print('=== Question 3(e): Non-Uniform Node Spacing ===')
+    """
+    Question 3(e): Modify the program you wrote in part (a) to use the five-point difference formula derived in class
+    for non-uniform node spacing.
+    """
+    print('\n=== Question 3(e): Non-Uniform Node Spacing ===')
 
     print('Jacobi (for reference)')
     iter_relaxer = jacobi_relaxation(EPSILON, 0.01)
@@ -268,14 +297,6 @@ def save_rows_to_csv(filename, rows, header=None):
             writer.writerow(header)
         for row in rows:
             writer.writerow(row)
-
-
-def q3():
-    o = q3b()
-    h_values, potential_values, iterations_values = q3c(o)
-    _, potential_values_jacobi, iterations_values_jacobi = q3d()
-    plot_sor_jacobi(h_values, potential_values, potential_values_jacobi, iterations_values, iterations_values_jacobi)
-    q3e()
 
 
 if __name__ == '__main__':

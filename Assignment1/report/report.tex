@@ -69,7 +69,7 @@
 	\subsection{Constructing Test Matrices}
 	% Construct some small matrices (n = 2, 3, 4, or 5) to test the program. Remember that the matrices must be real, symmetric and positive-definite. Explain how you chose the matrices.
 	
-	The matrices were constructed with the knowledge that, if $A$ is positive-definite, then $A = LL^T$ where L is a lower triangular non-singular matrix. The task of choosing valid $A$ matrices then boils down to finding non-singular lower triangular $L$ matrices. To ensure that $L$ is non-singular, one must simply choose nonzero values for the main diagonal. The Choleski decomposition algorithm then validates that the matrix is positive definite during the elimination phase, throwing an error if it is not.
+	The matrices were constructed with the knowledge that, if $A$ is positive-definite, then $A = LL^T$ where L is a lower triangular non-singular matrix. The task of choosing valid $A$ matrices then boils down to finding non-singular lower triangular $L$ matrices. To ensure that $L$ is non-singular, one must simply choose nonzero values for the main diagonal. The Choleski decomposition algorithm then validates that the matrix is positive definite during the elimination phase, throwing an error if it is not. The positive definite validation of these test matrices can be seen in \autoref{lst:q1_log}.
 	
 	\subsection{Test Runs}
 	% Test the program you wrote in (a) with each small matrix you built in (b) in the following way: invent an x, multiply it by A to get b, then give A and b to your program and check that it returns x correctly.
@@ -79,9 +79,9 @@
 	\subsection{Linear Networks}
 	% Write a program that reads from a file a list of network branches (Jk, Rk, Ek) and a reduced incidence matrix, and finds the voltages at the nodes of the network. Use the code from part (a) to solve the matrix problem. Explain how the data is organized and read from the file. Test the program with a few small networks that you can check by hand. Compare the results for your test circuits with the analytical results you obtained by hand. Cleary specify each of the test circuits used with a labeled schematic diagram.
 	
-	The code relating to solving linear networks can be found in the \mintinline{python}{linear_networks.py} file and is shown in \autoref{lst:linear_networks}. Here, the \mintinline{python}{csv_to_network_branch_matrices} method script reads from a CSV file where row $k$ contains the $J_k$, $R_k$ and $E_k$ values. It then converts the resistances to a diagonal admittance matrix $Y$ and produces the $J$ and $E$ column vectors. The incidence matrix $A$ is also read directly from file, as seen in \autoref{lst:q1}.
+	The code relating to solving linear networks can be found in the \mintinline{python}{linear_networks.py} file and is shown in \autoref{lst:linear_networks}. Here, the \mintinline{python}{csv_to_network_branch_matrices} method reads from a CSV file where row $k$ contains the $J_k$, $R_k$ and $E_k$ values. It then converts the resistances to a diagonal admittance matrix $Y$ and produces the $J$ and $E$ column vectors. The incidence matrix $A$ is also read directly from file, as seen in \autoref{lst:q1}.
 	
-	First, the program was tested various circuits. These circuits are labeled 1 to 6 and can be seen in \cref{fig:q1_circuit_1,fig:q1_circuit_2,fig:q1_circuit_3,fig:q1_circuit_4,fig:q1_circuit_5,fig:q1_circuit_6}. The corresponding voltages solved by SPICE at each node can be seen in \cref{table:q1_circuit_1,table:q1_circuit_2,table:q1_circuit_3,table:q1_circuit_4,table:q1_circuit_5,table:q1_circuit_6}. Each circuit has corresponding incidence matrix and network branch CSV files, located in the \mintinline{python}{network_data} directory. For each circuit, the program obtains the expected voltages, as seen in the output in \autoref{lst:q1_log}.
+	First, the program was tested with various circuits. These circuits are labeled 1 to 6 and can be seen in \cref{fig:q1_circuit_1,fig:q1_circuit_2,fig:q1_circuit_3,fig:q1_circuit_4,fig:q1_circuit_5,fig:q1_circuit_6}. The corresponding voltages solved by SPICE at each node can be seen in \cref{table:q1_circuit_1,table:q1_circuit_2,table:q1_circuit_3,table:q1_circuit_4,table:q1_circuit_5,table:q1_circuit_6}. Each circuit has corresponding incidence matrix and network branch CSV files, located in the \mintinline{python}{network_data} directory. For each circuit, the program obtains the expected voltages, as seen in the output in \autoref{lst:q1_log}.
 	
 	% TODO: Add listings of program output here?
 	
@@ -280,7 +280,7 @@
 	\subsection{SOR Program}
 	% Write a computer program to find the potential at the nodes of a regular mesh in the air between the conductors by the method of finite differences. Use a five-point difference formula. Exploit at least one of the planes of mirror symmetry that this problem has. Use an	equal node-spacing, h, in the x and y directions. Solve the matrix equation by successive	over-relaxation (SOR), with SOR parameter w. Terminate the iteration when the magnitude	of the residual at each free node is less than 10^-5.
 	
-	The source code for the finite difference methods can be seen in the \mintinline{python}{finite_diff.py} file shown in \autoref{lst:finite_diff}. Horizontal and vertical symmetries were exploited by only solving for a quarter of the coaxial cable, and reproducing the results where necessary. The initial potential values are guessed based on a radial function from the conductors.
+	The source code for the finite difference methods can be seen in the \mintinline{python}{finite_diff.py} file shown in \autoref{lst:finite_diff}. Horizontal and vertical symmetries were exploited by only solving for a quarter of the coaxial cable, and reproducing the results where necessary. The initial potential values are guessed based on a simple function which decreases radially from the center conductor.
 	
 	\subsection{Varying $\omega$}
 	% With h = 0.02, explore the effect of varying w. For 10 values of w between 1.0 and 2.0,	tabulate the number of iterations taken to achieve convergence, and the corresponding value	of potential at the point (x ,y) = (0.06, 0.04). Plot a graph of number of iterations versus w.
@@ -314,7 +314,7 @@
 	\subsection{Varying $h$}
 	% With an appropriate value of w, chosen from the above experiment, explore the effect of	decreasing h on the potential. Use values of h = 0.02, 0.01, 0.005, etc, and both tabulate and	plot the corresponding values of potential at (x, y) = (0.06, 0.04) versus 1/h. What do you think is the potential at (0.06, 0.04), to three significant figures? Also, tabulate and plot the number of iterations versus 1/h. Comment on the properties of both plots.
 	
-	With $\omega = 1.3$, the number of iterations of SOR versus $1/h$ is tabulated in \autoref{table:q3c_iterations} and plotted in \autoref{fig:q3c_iterations}. It can be seen that the smaller the node spacing is, the more iterations the program will take to run. Theoretically, the time complexity of the program should be $O(N^3)$, where the finite difference mesh is NxN. However, the experimental data shows a complexity closer to $O(1/h^2) = O(N^2)$. The discrepancy can perhaps be because of the relatively small amount of data points.
+	With $\omega = 1.3$, the number of iterations of SOR versus $1/h$ is tabulated in \autoref{table:q3c_iterations} and plotted in \autoref{fig:q3c_iterations}. Note that $h$ is in meters in all shown plots and tables. It can be seen that the smaller the node spacing is, the more iterations the program will take to run. Theoretically, the time complexity of the program should be $O(N^3)$, where the finite difference mesh is NxN. However, the experimental data shows a complexity closer to $O(1/h^2) = O(N^2)$. The discrepancy can perhaps be because of the relatively small amount of data points.
 	
 	\begin{table}[!htb]
 		\centering
@@ -331,7 +331,7 @@
 		\label{fig:q3c_iterations}
 	\end{figure}
 
-	The potential values found at (0.06, 0.04) versus $1/h$ are tabulated in \autoref{table:q3c_potential} and plotted in \autoref{fig:q3c_potential}. By examining these values, the potential at (0.06, 0.04) to three significant figures is approximately \SI{5.25}{\volt}. It can be seen that the smaller the node spacing is, the more accurate the calculated potential is. However, by inspecting \autoref{fig:q3c_potential} it is apparent that the potential converges relatively quickly to around \SI{5.25}{\volt}. There are therefore diminishing returns to decreasing the node spacing too much, since this will also greatly increase the runtime of the program.
+	The potential values found at (0.06, 0.04) versus $1/h$ are tabulated in \autoref{table:q3c_potential} and plotted in \autoref{fig:q3c_potential}. By examining these values, the potential at (0.06, 0.04) to three significant figures is approximately \SI{5.24}{\volt}. It can be seen that the smaller the node spacing is, the more accurate the calculated potential is. However, by inspecting \autoref{fig:q3c_potential} it is apparent that the potential converges relatively quickly to around \SI{5.24}{\volt}. There are therefore diminishing returns to decreasing the node spacing too much, since this will also greatly increase the runtime of the program.
 
 	\begin{table}[!htb]
 		\centering
@@ -368,7 +368,7 @@
 		\label{fig:q3d_iterations}
 	\end{figure}
 
-	The potential values found at (0.06, 0.04) versus $1/h$ with the Jacobi method are tabulated in \autoref{table:q3d_potential} and plotted in \autoref{fig:q3d_potential}. These potential values are almost identical to the SOR ones. Similarly to SOR, the smaller the node spacing is, the more accurate the calculated potential is.
+	The potential values found at (0.06, 0.04) versus $1/h$ with the Jacobi method are tabulated in \autoref{table:q3d_potential} and plotted in \autoref{fig:q3d_potential}. These potential values are almost identical to the SOR ones, which suggests that it is converging correctly. Similarly to SOR, the smaller the node spacing is, the more accurate the calculated potential is.
 
 	\begin{table}[!htb]
 		\centering
@@ -385,7 +385,7 @@
 		\label{fig:q3d_potential}
 	\end{figure}
 
-	The number of iterations of both SOR and the Jacobi method can be seen in \autoref{fig:q3d_iterations_comparison}, which shows the clear benefits of SOR.
+	A comparison of the number of iterations of SOR and Jacobi can be seen in \autoref{fig:q3d_iterations_comparison}, which shows the clear benefits of SOR.
 
 	\begin{figure}[!htb]
 		\centering
@@ -398,7 +398,7 @@
 	\subsection{Non-uniform Node Spacing}
 	% Modify the program you wrote in part (a) to use the five-point difference formula derived in	class for non-uniform node spacing. An alternative to using equal node spacing, h, is to use	smaller node spacing in more “difficult” parts of the problem domain. Experiment with a	scheme of this kind and see how accurately you can compute the value of the potential at (x, y)	= (0.06, 0.04) using only as many nodes as for the uniform case h = 0.01 in part (c).
 	
-	First, we adjust the equation derived in class to set $a_1 = \Delta_x\alpha_1$, $a_2 = \Delta_x\alpha_2$, $b_1 = \Delta_y\beta_1$ and $b_2 = \Delta_y\beta_2$. These values correspond to the distances between adjacent nodes \footnote{Note that, in the program, index $i$ is associated to position $x$ and index $j$ is associated to position $y$. This is purely for easier handling of the matrices.}, and can be easily calculated by the program. Then, the five-point difference formula for non-uniform spacing can be seen in \autoref{eq:non_uniform}.
+	First, we adjust the equation derived in class to set $a_1 = \Delta_x\alpha_1$, $a_2 = \Delta_x\alpha_2$, $b_1 = \Delta_y\beta_1$ and $b_2 = \Delta_y\beta_2$. These values \footnote{Note that, in the program, index $i$ is associated to position $y$ and index $j$ is associated to position $x$. This is purely for easier handling of the matrices.} correspond to the distances between adjacent nodes, and can be easily calculated by the program. Then, the five-point difference formula for non-uniform spacing can be seen in \autoref{eq:non_uniform}.
 	
 	\begin{align} \label{eq:non_uniform}
 		\begin{split}
@@ -408,19 +408,15 @@
 		\end{split}
 	\end{align}
 	
-	This was implemented in the finite difference program, as seen in \mintinline{python}{NonUniformRelaxer} class in the \mintinline{python}{finite_diff.py} file shown in \autoref{lst:finite_diff}. As can be seen in this code, many different mesh arrangements were tested. The arrangement that was chosen can be seen in \autoref{fig:q3e}. This arrangement was chosen because the ``difficult'' regions are close to the inner conductor, where there is a higher concentration of nodes. The potential at (0.06, 0.04) obtained from this arrangement is \SI{5.243}{\volt}, which seems like an accurate potential value. Indeed, as can be seen in \Cref{fig:q3c_potential,fig:q3d_potential}, the potential value for small node spacings tends towards \SI{5.24}{\volt} for both the Jacobi and SOR methods.
+	This was implemented in the finite difference program, as seen in \mintinline{python}{NonUniformRelaxer} class in the \mintinline{python}{finite_diff.py} file shown in \autoref{lst:finite_diff}. As can be seen in this code, many different mesh arrangements were tested. It was also tested that if the non-uniform program is given a uniformly spaced grid, it finds the same potential as Jacobi. The chosen grid arrangement can be seen in \autoref{fig:q3e}. This grid was selected because the ``difficult'' regions are close to the inner conductor, where there is a higher concentration of nodes. The potential at (0.06, 0.04) obtained from this arrangement is \SI{5.243}{\volt}, which seems like an accurate potential value. Indeed, as can be seen in \Cref{fig:q3c_potential,fig:q3d_potential}, the potential value for small node spacings tends towards \SI{5.24}{\volt} for both the Jacobi and SOR methods.
 	
 	\begin{figure}[!htb]
 		\centering
 		\includegraphics[width=\columnwidth]{plots/q3e.pdf}
 		\caption
-		{Final mesh arrangement used for non-uniform node spacing. Each point corresponds to a mesh point. Points are positioned closer to the inner conductor, since this is a more difficult area.}
+		{Final mesh arrangement used for non-uniform node spacing. Each point corresponds to a mesh point. The $x$ and $y$ coordinate are in meters. Points are positioned closer to the inner conductor, since this is a more difficult area. Note that this arrangement only represents one fourth of the entire grid, which is symmetric in $x$ and $y$.}
 		\label{fig:q3e}
 	\end{figure}
-
-	\section*{Conclusion}
-	
-	A Choleski matrix solver, finite difference mesh generator, and finite difference potential solver were created with positive results. The trade-offs between the various implementations of the algorithms associated with these programs were explored and analyzed.
 	
 	\onecolumn
 	

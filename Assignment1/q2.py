@@ -101,7 +101,7 @@ def plot_runtime(points, banded=False):
     plt.plot(x_range, y_range, '{}o'.format('C1' if banded else 'C0'), label='Data points')
 
     x_new = np.linspace(x_range[0], x_range[-1], num=len(x_range) * 10)
-    degree = 4 if banded else 6
+    degree = 4 if banded else 5
     polynomial_coeffs = poly.polyfit(x_range, y_range, degree)
     polynomial_fit = poly.polyval(x_new, polynomial_coeffs)
     N = sp.symbols("N")

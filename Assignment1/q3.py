@@ -1,6 +1,5 @@
 from __future__ import division
 
-import csv
 import time
 
 import matplotlib.pyplot as plt

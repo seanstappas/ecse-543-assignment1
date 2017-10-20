@@ -34,6 +34,7 @@
 %\titleformat*{\subsection}{\small\bfseries}
 \renewcommand{\thesubsection}{\thesection.\alph{subsection}}
 \providecommand*{\listingautorefname}{Listing}
+\newcommand*{\Appendixautorefname}{Appendix}
 
 %opening
 \title{\textbf{ECSE 543 \\ Assignment 1}}
@@ -51,7 +52,7 @@
 	
 	\section*{Introduction}
 	
-	The programs for this assignment were created in Python 2.7. The source code is provided as listings in \autoref{appendix:listings}. To perform the required tasks in this assignment, a custom matrix package was created, with useful methods such as add, multiply, transpose, etc. This package can be seen in \autoref{lst:matrices}. The structure of the rest of the code will be discussed as appropriate for each question. In addition, logs of the output of the programs are provided in \autoref{appendix:logs}.
+	The programs for this assignment were created in Python 2.7. The source code is provided as listings in \autoref{appendix:listings}. To perform the required tasks in this assignment, a custom matrix package was created, with useful methods such as add, multiply, transpose, etc. This package can be seen in \autoref{lst:matrices}. The structure of the rest of the code will be discussed as appropriate for each question. The only packages used that are not built-in are those for fitting curves and creating the plots for this report. These include \mintinline{python}{matplotlib} for plotting,  \mintinline{python}{numpy} for polynomial fitting and  \mintinline{python}{sympy} for printing mathematical symbols on the plots. Output logs are provided in \autoref{appendix:logs}.
 	
 	\section{Choleski Decomposition}
 	
@@ -172,7 +173,7 @@
 		\label{table:q1_circuit_6}
 	\end{table}
 	
-	\section{Finite Difference Mesh}
+	\section{Finite Difference Resistive Mesh}
 	
 	The source code for the Question 2 program can be seen in the \mintinline{python}{q2.py} file shown in \autoref{lst:q2}.
 	

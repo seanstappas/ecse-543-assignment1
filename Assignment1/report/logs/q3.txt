@@ -238,3 +238,5 @@ Quarter grid:
   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00
 Num iterations: 222
 Potential at (0.06, 0.04): 5.243 V
+
+Process finished with exit code 0

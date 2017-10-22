@@ -76,3 +76,5 @@ V2 = 5.498 V
 V3 = 3.036 V
 V4 = 3.200 V
 V5 = 1.301 V
+
+Process finished with exit code 0

@@ -14,9 +14,10 @@ def q2():
     """
     Question 2
     """
-    runtimes1 = q2ab()
-    pts, runtimes2 = q2c()
+    runtimes1, choleski_runtimes1 = q2ab()
+    pts, runtimes2, choleski_runtimes2 = q2c()
     plot_runtimes(runtimes1, runtimes2)
+    plot_runtimes(choleski_runtimes1, choleski_runtimes2, True)
     q2d(pts)
 
 
@@ -30,9 +31,11 @@ def q2ab():
     :return: the timings for finding the mesh resistance for N = 2, 3 ... 10
     """
     print('\n=== Question 2(a)(b) ===')
-    _, runtimes = find_mesh_resistances(banded=False)
+    _, runtimes, choleski_runtimes = find_mesh_resistances(banded=False)
     save_rows_to_csv('report/csv/q2b.csv', zip(runtimes.keys(), runtimes.values()), header=('N', 'Runtime (s)'))
-    return runtimes
+    save_rows_to_csv('report/csv/q2b_choleski.csv', zip(choleski_runtimes.keys(), choleski_runtimes.values()),
+                     header=('N', 'Runtime (ms)'))
+    return runtimes, choleski_runtimes
 
 
 def q2c():
@@ -42,9 +45,11 @@ def q2c():
     :return: the mesh resistances and the timings for N = 2, 3 ... 10
     """
     print('\n=== Question 2(c) ===')
-    resistances, runtimes = find_mesh_resistances(banded=True)
+    resistances, runtimes, choleski_runtimes = find_mesh_resistances(banded=True)
     save_rows_to_csv('report/csv/q2c.csv', zip(runtimes.keys(), runtimes.values()), header=('N', 'Runtime (s)'))
-    return resistances, runtimes
+    save_rows_to_csv('report/csv/q2c_choleski.csv', zip(choleski_runtimes.keys(), choleski_runtimes.values()),
+                     header=('N', 'Runtime (ms)'))
+    return resistances, runtimes, choleski_runtimes
 
 
 def q2d(resistances):
@@ -78,21 +83,25 @@ def q2d(resistances):
 def find_mesh_resistances(banded):
     branch_resistance = 1000
     points = {}
-    runtimes = {}
+    total_runtimes = {}
+    choleski_runtimes = {}
     for n in range(2, 11):
         start_time = time.time()
         half_bandwidth = 2 * n + 1 if banded else None
-        equivalent_resistance = find_mesh_resistance(n, branch_resistance, half_bandwidth=half_bandwidth)
+        equivalent_resistance, choleski_runtime = find_mesh_resistance(n, branch_resistance, half_bandwidth=half_bandwidth)
         print('Equivalent resistance for {}x{} mesh: {:.2f} Ohms.'.format(n, 2 * n, equivalent_resistance))
         points[n] = '{:.3f}'.format(equivalent_resistance)
         runtime = time.time() - start_time
-        runtimes[n] = '{:.3f}'.format(runtime)
+        total_runtimes[n] = '{:.3f}'.format(runtime)
+        print('Choleski runtime: {} ms'.format(choleski_runtime))
+        choleski_runtimes[n] = '{:.3f}'.format(choleski_runtime)
         print('Runtime: {} s.'.format(runtime))
-    plot_runtime(runtimes, banded)
-    return points, runtimes
+    plot_runtime(total_runtimes, banded)
+    plot_runtime(choleski_runtimes, banded, True)
+    return points, total_runtimes, choleski_runtimes
 
 
-def plot_runtime(points, banded=False):
+def plot_runtime(points, banded=False, choleski=False):
     f = plt.figure()
     ax = f.gca()
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -101,7 +110,7 @@ def plot_runtime(points, banded=False):
     plt.plot(x_range, y_range, '{}o'.format('C1' if banded else 'C0'), label='Data points')
 
     x_new = np.linspace(x_range[0], x_range[-1], num=len(x_range) * 10)
-    degree = 4 if banded else 5
+    degree = 6 if not choleski else (4 if banded else 5)
     polynomial_coeffs = poly.polyfit(x_range, y_range, degree)
     polynomial_fit = poly.polyval(x_new, polynomial_coeffs)
     N = sp.symbols("N")
@@ -110,13 +119,14 @@ def plot_runtime(points, banded=False):
     plt.plot(x_new, polynomial_fit, '{}-'.format('C1' if banded else 'C0'), label=equation)
 
     plt.xlabel('N')
-    plt.ylabel('Runtime (s)')
+    plt.ylabel('Runtime ({})'.format('ms' if choleski else 's'))
     plt.grid(True)
     plt.legend(fontsize='x-small')
-    f.savefig('report/plots/q2{}.pdf'.format('c' if banded else 'b'), bbox_inches='tight')
+    f.savefig('report/plots/q2{}{}.pdf'.format('c' if banded else 'b', '_choleski' if choleski else ''),
+              bbox_inches='tight')
 
 
-def plot_runtimes(points1, points2):
+def plot_runtimes(points1, points2, choleski=False):
     f = plt.figure()
     ax = f.gca()
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -126,10 +136,10 @@ def plot_runtimes(points1, points2):
     plt.plot(x_range, y_range, 'o-', label='Non-banded elimination')
     plt.plot(x_range, y_banded_range, 'o-', label='Banded elimination')
     plt.xlabel('N')
-    plt.ylabel('Runtime (s)')
+    plt.ylabel('Runtime ({})'.format('ms' if choleski else 's'))
     plt.grid(True)
     plt.legend()
-    f.savefig('report/plots/q2bc.pdf', bbox_inches='tight')
+    f.savefig('report/plots/q2bc{}.pdf'.format('_choleski' if choleski else ''), bbox_inches='tight')
 
 
 if __name__ == '__main__':

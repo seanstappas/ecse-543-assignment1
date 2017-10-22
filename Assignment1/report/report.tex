@@ -182,7 +182,7 @@
 	\subsection{Equivalent Resistance}
 	% Using the program you developed in question 1, find the resistance, R, between the node at the bottom left corner of the mesh and the node at the top right corner of the mesh, for N = 2, 3, …, 10. (You will probably want to write a small program that generates the input file needed by the network analysis program. Constructing by hand the incidence matrix for a 200-node network is rather tedious).
 	
-	The code for creating all the network matrices and for finding the equivalent resistance of an $N$ by $2N$ mesh can be seen in the \mintinline{python}{linear_networks.py} file shown in \autoref{lst:linear_networks}. The \mintinline{python}{create_network_matrices_mesh} method creates the incidence matrix $A$, the admittance matrix $Y$, the current source matrix $J$ and the voltage source matrix $E$. The matrix $A$ is created by reading the associated numbered \mintinline{python}{incidence_matrix} CSV files inside the \mintinline{python}{network_data} directory. Similarly, the $Y$, $J$ and $E$ matrices are created by reading the \mintinline{python}{network_branches} CSV files in the same directory. Each of these files contains a list of network branches $(J_k, R_k, E_k)$. The resistances found by the program for values of $N$ from 2 to 10 can be seen in \autoref{table:q2a}.
+	The code for creating all the network matrices and for finding the equivalent resistance of an $N$ by $2N$ mesh can be seen in the \mintinline{python}{linear_networks.py} file shown in \autoref{lst:linear_networks}. To find the equivalent resistance of the mesh, a current source between the top right node and ground was added. Finding the resistance is then simply measuring the voltage at that node and dividing by the test current, which is \SI{10}{\milli\ampere}. The \mintinline{python}{create_network_matrices_mesh} method creates the incidence matrix $A$, the admittance matrix $Y$, the current source matrix $J$ and the voltage source matrix $E$. The matrix $A$ is created by reading the associated numbered \mintinline{python}{incidence_matrix} CSV files inside the \mintinline{python}{network_data} directory. Similarly, the $Y$, $J$ and $E$ matrices are created by reading the \mintinline{python}{network_branches} CSV files in the same directory. Each of these files contains a list of network branches $(J_k, R_k, E_k)$. The resistances found by the program for values of $N$ from 2 to 10 can be seen in \autoref{table:q2a}.
 	
 	\begin{table}[!htb]
 		\centering
@@ -191,8 +191,7 @@
 		\label{table:q2a}
 	\end{table}
 
-	The resistance values returned by the program for small meshes were validated using simple SPICE circuits. The voltage found at the $V_{test}$ node for the 2x4 mesh shown in \autoref{fig:q2a_mesh_2} is \SI{1.875}{\volt} and the equivalent resistance is therefore \SI{1875}{\ohm}. Similarly, for the 3x6 mesh
-	 (\autoref{fig:q2a_mesh_3}), $V_{test} = \SI{2.37955}{\volt}$ and the equivalent resistance is \SI{2379.55}{\ohm}. These match the results found by the program, as seen in \autoref{table:q2a}. Bigger mesh circuits were not tested, but these results give at least some confidence that the program is working correctly.
+	The resistance values returned by the program for small meshes were validated using simple SPICE circuits. The voltage found at the $V_{test}$ node for the 2x4 mesh shown in \autoref{fig:q2a_mesh_2} is \SI{1.875}{\volt} and the equivalent resistance is therefore \SI{1875}{\ohm}. Similarly, for the 3x6 mesh (\autoref{fig:q2a_mesh_3}), $V_{test} = \SI{2.37955}{\volt}$ and the equivalent resistance is \SI{2379.55}{\ohm}. These match the results found by the program, as seen in \autoref{table:q2a}. Bigger mesh circuits were not tested, but these results give at least some confidence that the program is working correctly.
 	
 	\begin{figure}[!htb]
 		\centering
@@ -213,34 +212,51 @@
 	\subsection{Time Complexity}
 	% In theory, how does the computer time taken to solve this problem increase with N, for large N? Are the timings you observe for your practical implementation consistent with this? Explain your observations.
 	
-	The runtime data for the mesh resistance solver is tabulated in \autoref{table:q2b} and plotted in \autoref{fig:q2b}. Theoretically, the time complexity of the program should be $O(N^6)$. However, as can be seen in \autoref{fig:q2b}, $O(N^5)$ more closely matches the obtained data. The simple Choleski program is therefore more efficient than expected. The reasons why are uncertain, but it may be because of successful branch prediction on the repeated zeros of the matrix when performing elimination.
+	The runtime data for the mesh resistance solver is plotted in \autoref{fig:q2b}. The overall runtime of the program is dominated by the initial matrix multiplication to form $AYA^T$, which is $O(N^6)$, and this will be true for the banded and non-banded versions of the Choleski program. This matches the results seen in \autoref{fig:q2b}.
 	
-	\begin{table}[!htb]
-		\centering
-		\caption{Runtime of mesh resistance solver program versus mesh size $N$.}
-		\csvautobooktabular{csv/q2b.csv}
-		\label{table:q2b}
-	\end{table}
+%	\begin{table}[!htb]
+%		\centering
+%		\caption{Runtime of non-banded mesh resistance solver program versus mesh size $N$.}
+%		\csvautobooktabular{csv/q2b.csv}
+%		\label{table:q2b}
+%	\end{table}
 
 	\begin{figure}[!htb]
 		\centering
 		\includegraphics[width=\columnwidth]{plots/q2b.pdf}
 		\caption
-		{Runtime of mesh resistance solver program versus mesh size $N$.}
+		{Runtime of non-banded mesh resistance solver program versus mesh size $N$.}
 		\label{fig:q2b}
+	\end{figure}
+
+	To better display the benefits of banded Choleski elimination, we will look specifically at the runtime of the Choleski elimination and back-substitution, which is plotted in \autoref{fig:q2b_choleski}. Theoretically, the time complexity of the non-banded Choleski program should be $O(N^6)$. However, as can be seen in \autoref{fig:q2b_choleski}, $O(N^5)$ more closely matches the obtained data. The simple Choleski program is therefore more efficient than expected. This may be because of successful branch prediction on the repeated zeros of the matrix when performing elimination, or because of the relatively small amount of data points.
+	
+%	\begin{table}[!htb]
+%		\centering
+%		\caption{Runtime of non-banded Choleski program versus mesh size $N$.}
+%		\csvautobooktabular{csv/q2b_choleski.csv}
+%		\label{table:q2b_choleski}
+%	\end{table}
+
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\columnwidth]{plots/q2b_choleski.pdf}
+		\caption
+		{Runtime of non-banded Choleski program versus mesh size $N$.}
+		\label{fig:q2b_choleski}
 	\end{figure}
 	
 	\subsection{Sparsity Modification}
 	% Modify your program to exploit the sparse nature of the matrices to save computation time. What is the half-bandwidth b of your matrices? In theory, how does the computer time taken to solve this problem increase now with N, for large N? Are the timings you for your practical sparse implementation consistent with this? Explain your observations.
 	
-	The runtime data for the banded mesh resistance solver is tabulated in \autoref{table:q2c} and plotted in \autoref{fig:q2c}. By inspection of the constructed network matrices, a half-bandwidth of $2N + 1$ was chosen. Theoretically, the banded version should have a time complexity of $O(N^4)$, which matches the experimental results.
+	 By inspection of the constructed network matrices, a half-bandwidth of $b = 2N + 1$ was chosen for the banded version of the program. The runtime data for the banded mesh resistance solver is plotted in \autoref{fig:q2c}. Once again, the program is dominated by the $O(N^6)$ initial matrix multiplication, which matches the obtained results. The runtime of the banded Choleski program is plotted in \autoref{fig:q2c_choleski}. Theoretically, the banded version of the Choleski program should have a time complexity of $O(N^4)$, which also matches the experimental results.
 	
-	\begin{table}[!htb]
-		\centering
-		\caption{Runtime of banded mesh resistance solver program versus mesh size $N$.}
-		\csvautobooktabular{csv/q2c.csv}
-		\label{table:q2c}
-	\end{table}
+%	\begin{table}[!htb]
+%		\centering
+%		\caption{Runtime of banded mesh resistance solver program versus mesh size $N$.}
+%		\csvautobooktabular{csv/q2c.csv}
+%		\label{table:q2c}
+%	\end{table}
 
 	\begin{figure}[!htb]
 		\centering
@@ -250,14 +266,29 @@
 		\label{fig:q2c}
 	\end{figure}
 
-	The runtime of the banded and non-banded versions of the program are plotted in \autoref{fig:q2bc}, showing the marginal benefits of banded elimination. Indeed, the performance increase is not as big as expected, since the non-banded elimination already performed relatively well, possibly because of good branch prediction.
+%	\begin{table}[!htb]
+%		\centering
+%		\caption{Runtime of banded Choleski program versus mesh size $N$.}
+%		\csvautobooktabular{csv/q2c_choleski.csv}
+%		\label{table:q2c_choleski}
+%	\end{table}
 
 	\begin{figure}[!htb]
 		\centering
-		\includegraphics[width=\columnwidth]{plots/q2bc.pdf}
+		\includegraphics[width=\columnwidth]{plots/q2c_choleski.pdf}
 		\caption
-		{Comparison of runtime of banded and non-banded resistance solver programs versus mesh size $N$.}
-		\label{fig:q2bc}
+		{Runtime of banded Choleski program versus mesh size $N$.}
+		\label{fig:q2c_choleski}
+	\end{figure}
+
+	The runtime of the banded and non-banded versions of the Choleski program are plotted together in \autoref{fig:q2bc_choleski}, showing the clear benefits of banded elimination.
+
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\columnwidth]{plots/q2bc_choleski.pdf}
+		\caption
+		{Comparison of runtime of banded and non-banded Choleski programs versus mesh size $N$.}
+		\label{fig:q2bc_choleski}
 	\end{figure}
 	
 	\subsection{Resistance vs. Mesh Size}
@@ -331,7 +362,7 @@
 		\label{fig:q3c_iterations}
 	\end{figure}
 
-	The potential values found at (0.06, 0.04) versus $1/h$ are tabulated in \autoref{table:q3c_potential} and plotted in \autoref{fig:q3c_potential}. By examining these values, the potential at (0.06, 0.04) to three significant figures is approximately \SI{5.24}{\volt}. It can be seen that the smaller the node spacing is, the more accurate the calculated potential is. However, by inspecting \autoref{fig:q3c_potential} it is apparent that the potential converges relatively quickly to around \SI{5.24}{\volt}. There are therefore diminishing returns to decreasing the node spacing too much, since this will also greatly increase the runtime of the program.
+	The potential values found at (0.06, 0.04) versus $1/h$ are tabulated in \autoref{table:q3c_potential} and plotted in \autoref{fig:q3c_potential}. By examining these values, the potential at (0.06, 0.04) to three significant figures is converging to approximately \SI{5.24}{\volt}. It can be seen that the smaller the node spacing is, the more accurate the calculated potential is. However, by inspecting \autoref{fig:q3c_potential} it is apparent that the potential converges relatively quickly to around \SI{5.24}{\volt}. There are therefore diminishing returns to decreasing the node spacing too much, since this will also greatly increase the runtime of the program. This of course depends on the level of precision needed in the program.
 
 	\begin{table}[!htb]
 		\centering
@@ -408,7 +439,7 @@
 		\end{split}
 	\end{align}
 	
-	This was implemented in the finite difference program, as seen in \mintinline{python}{NonUniformRelaxer} class in the \mintinline{python}{finite_diff.py} file shown in \autoref{lst:finite_diff}. As can be seen in this code, many different mesh arrangements were tested. It was also tested that if the non-uniform program is given a uniformly spaced grid, it finds the same potential as Jacobi. The chosen grid arrangement can be seen in \autoref{fig:q3e}. This grid was selected because the ``difficult'' regions are close to the inner conductor, where there is a higher concentration of nodes. The potential at (0.06, 0.04) obtained from this arrangement is \SI{5.243}{\volt}, which seems like an accurate potential value. Indeed, as can be seen in \Cref{fig:q3c_potential,fig:q3d_potential}, the potential value for small node spacings tends towards \SI{5.24}{\volt} for both the Jacobi and SOR methods.
+	This was implemented in the finite difference program, as seen in \mintinline{python}{NonUniformRelaxer} class in the \mintinline{python}{finite_diff.py} file shown in \autoref{lst:finite_diff}. As can be seen in this code, many different mesh arrangements were tested. It was also tested that, if the non-uniform program is given a uniformly spaced grid, it finds the same potential as Jacobi. The chosen grid arrangement can be seen in \autoref{fig:q3e}. This grid was selected because the ``difficult'' regions are close to the inner conductor, where there is a higher concentration of nodes. The potential at (0.06, 0.04) obtained from this arrangement is \SI{5.243}{\volt}, which seems like an accurate potential value. Indeed, as can be seen in \Cref{fig:q3c_potential,fig:q3d_potential}, the potential value for small node spacings tends towards \SI{5.24}{\volt} for both the Jacobi and SOR methods.
 	
 	\begin{figure}[!htb]
 		\centering

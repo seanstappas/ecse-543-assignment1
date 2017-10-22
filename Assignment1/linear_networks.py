@@ -1,6 +1,7 @@
 from __future__ import division
 
 import csv
+import time
 from matrices import Matrix
 from choleski import choleski_solve
 
@@ -19,6 +20,25 @@ def solve_linear_network(A, Y, J, E, half_bandwidth=None):
     A_new = A * Y * A.transpose()
     b = A * (J - Y * E)
     return choleski_solve(A_new, b, half_bandwidth=half_bandwidth)
+
+
+def solve_linear_network_runtime(A, Y, J, E, half_bandwidth=None):
+    """
+    Solve the linear resistive network described by the given matrices.
+
+    :param A: the incidence matrix
+    :param Y: the admittance matrix
+    :param J: the current source matrix
+    :param E: the voltage source matrix
+    :param half_bandwidth:
+    :return: the solved voltage matrix and the runtime of the Choleski program (in ms)
+    """
+    A_new = A * Y * A.transpose()
+    b = A * (J - Y * E)
+    t = time.clock()
+    x = choleski_solve(A_new, b, half_bandwidth=half_bandwidth)
+    runtime = (time.clock() - t) * 1000
+    return x, runtime
 
 
 def csv_to_network_branch_matrices(filename):
@@ -120,7 +140,7 @@ def create_network_branch_matrices_mesh(num_branches, branch_resistance, test_cu
     Y = Matrix.diagonal([1 / branch_resistance if branch < num_branches - 1 else 0 for branch in range(num_branches)])
     # Negative test current here because we assume current is coming OUT of the test current node.
     J = Matrix.column_vector([0 if branch < num_branches - 1 else -test_current for branch in range(num_branches)])
-    E = Matrix.column_vector([0 for branch in range(num_branches)])
+    E = Matrix.column_vector([0 for _ in range(num_branches)])
     return Y, J, E
 
 
@@ -136,7 +156,7 @@ def find_mesh_resistance(N, branch_resistance, half_bandwidth=None):
     """
     test_current = 0.01
     A, Y, J, E = create_network_matrices_mesh(N, 2 * N, branch_resistance, test_current)
-    x = solve_linear_network(A, Y, J, E, half_bandwidth=half_bandwidth)
+    x, choleski_runtime = solve_linear_network_runtime(A, Y, J, E, half_bandwidth=half_bandwidth)
     test_voltage = x[2 * N - 1 if N > 1 else 0][0]
     equivalent_resistance = test_voltage / test_current
-    return equivalent_resistance
+    return equivalent_resistance, choleski_runtime
